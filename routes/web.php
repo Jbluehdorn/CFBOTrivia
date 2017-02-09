@@ -16,8 +16,9 @@ Route::get('/', 'HomeController@index');
 Route::group(['prefix' => 'admin'], function() {
     Route::get('/', 'AdminController@index');
     Route::get('/newForm', 'AdminController@newForm');
+    Route::get('/edit/{id}', 'AdminController@editForm');
 
-    Route::post('/newForm', 'AdminController@createNewForm');
+    Route::post('/newForm', 'AdminController@createForm');
 });
 
 Auth::routes();
