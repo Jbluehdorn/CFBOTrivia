@@ -9,7 +9,9 @@
                 <h3 class="panel-title">All Forms</h3>
             </div>
             <div class="panel-body">
-                Heres a thing
+                @foreach($forms as $form)
+                    {{$form->title}}
+                @endforeach
             </div>
         </div>
     </div>

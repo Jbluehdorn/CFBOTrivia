@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Form;
 
 class AdminController extends Controller
 {
@@ -19,7 +20,8 @@ class AdminController extends Controller
      * Home page for the admin side of the application
      */
     public function index() {
-        return view('admin/all');
+        $forms = $this->getAllForms();
+        return view('admin/all')->with(compact('forms'));
     }
 
     /**
@@ -27,5 +29,9 @@ class AdminController extends Controller
      */
     public function newForm() {
         return view('admin/new');
+    }
+
+    public function getAllForms() {
+        return Form::get();
     }
 }
