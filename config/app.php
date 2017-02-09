@@ -22,7 +22,7 @@ return [
     | The location of the logo for the project.
     */
 
-    'logo' => asset(''),
+    'logo' => '',
 
     /*
     |--------------------------------------------------------------------------

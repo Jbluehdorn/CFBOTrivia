@@ -21,4 +21,11 @@ class AdminController extends Controller
     public function index() {
         return view('admin/all');
     }
+
+    /**
+     * New form page
+     */
+    public function newForm() {
+        return view('admin/new');
+    }
 }

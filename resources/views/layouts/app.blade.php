@@ -8,7 +8,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'CFBOTrivia') }}</title>
+    <title>{{ config('app.name', 'CFBOTrivia') }} - @yield('title', '')</title>
 
     <!-- Styles -->
     <link href="/css/app.css" rel="stylesheet">
