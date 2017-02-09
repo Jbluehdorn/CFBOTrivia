@@ -30,7 +30,8 @@
             </div>
             <div class="collapse navbar-collapse">
                 <ul class="nav navbar-nav">
-                    <li><a href="/admin">Forms</a></li>
+                    <li><a href="/admin">All</a></li>
+                    <li><a href="/admin/newForm">New</a></li>
                 </ul>
             </div>
         </div>

@@ -12,7 +12,10 @@
 */
 
 Route::get('/', 'HomeController@index');
-Route::get('/admin', 'HomeController@index');
+
+Route::group(['prefix' => 'admin'], function() {
+    Route::get('/', 'AdminController@index');
+});
 
 Auth::routes();
 

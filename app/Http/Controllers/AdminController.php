@@ -6,5 +6,19 @@ use Illuminate\Http\Request;
 
 class AdminController extends Controller
 {
-    //
+    /**
+     * AdminController constructor
+     * Middleware: Authentication
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
+    /**
+     * Home page for the admin side of the application
+     */
+    public function index() {
+        return view('admin/all');
+    }
 }
