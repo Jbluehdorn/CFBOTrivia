@@ -16,8 +16,10 @@
             <i class="fa fa-check clickable" @click="beingEdited = false"></i>
         </div>
 
-        <modal header="Are you sure?" v-if="deleteModalShown"  @close="deleteModalShown = false">
-            Do you really wanna delete this shit?
+        <modal header="Delete" v-if="deleteModalShown"  @close="deleteModalShown = false">
+            Are you sure you want to delete this entry?
+            <button type="button" class="btn btn-primary" @click="deleteModalShown = false">Cancel</button>
+            <button type="button" class="btn btn-danger" @click="remove">Delete</button>
         </modal>
     </div>
 </template>
@@ -73,6 +75,12 @@
                     });
                 }
             }
+        },
+        methods: {
+          remove() {
+              this.deleteModalShown = false;
+              this.$emit('remove');
+          }
         },
         created() {
             this.internalValue = this.value;

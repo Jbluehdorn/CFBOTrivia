@@ -12194,6 +12194,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = {
     data: function data() {
@@ -12218,6 +12220,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             }
         }
     },
+    methods: {
+        remove: function remove() {
+            this.deleteModalShown = false;
+            this.$emit('remove');
+        }
+    },
     created: function created() {
         this.internalValue = this.value;
         this.beingEdited = this.value === undefined;
@@ -12230,6 +12238,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
 //
 //
 //
@@ -12274,6 +12285,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     methods: {
         addAnswer: function addAnswer(question) {
             question.answers.push({});
+        },
+        addQuestion: function addQuestion() {
+            this.internalForm.questions.push({ answers: [] });
+        },
+        remove: function remove(entry) {
+            entry.removed = true;
+            this.$forceUpdate();
         }
     }
 };
@@ -31990,8 +32008,8 @@ module.exports = Component.exports
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('div', [_c('ul', {
     staticClass: "list-unstyled form-editor"
-  }, _vm._l((_vm.internalForm.questions), function(question) {
-    return _c('li', {
+  }, [_vm._l((_vm.internalForm.questions), function(question) {
+    return (!question.removed) ? _c('li', {
       staticClass: "question"
     }, [_c('editable-field', {
       directives: [{
@@ -32004,6 +32022,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         "value": (question.body)
       },
       on: {
+        "remove": function($event) {
+          _vm.remove(question)
+        },
         "input": function($event) {
           question.body = $event
         }
@@ -32011,7 +32032,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }), _vm._v(" "), (question.answers) ? _c('ul', {
       staticClass: "answer"
     }, [_vm._l((question.answers), function(answer) {
-      return (!answer.deleted) ? _c('li', [_c('editable-field', {
+      return (!answer.removed) ? _c('li', [_c('editable-field', {
         directives: [{
           name: "model",
           rawName: "v-model",
@@ -32022,6 +32043,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
           "value": (answer.body)
         },
         on: {
+          "remove": function($event) {
+            _vm.remove(answer)
+          },
           "input": function($event) {
             answer.body = $event
           }
@@ -32036,8 +32060,15 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       }
     }, [_vm._v("Add Answer "), _c('i', {
       staticClass: "fa fa-plus-circle"
-    })])])], 2) : _vm._e()], 1)
-  }))])
+    })])])], 2) : _vm._e()], 1) : _vm._e()
+  }), _vm._v(" "), _c('li', [_c('span', {
+    staticClass: "clickable",
+    on: {
+      "click": _vm.addQuestion
+    }
+  }, [_vm._v("Add Question "), _c('i', {
+    staticClass: "fa fa-plus-circle"
+  })])])], 2)])
 },staticRenderFns: []}
 module.exports.render._withStripped = true
 if (false) {
@@ -32116,14 +32147,32 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   })]), _vm._v(" "), (_vm.deleteModalShown) ? _c('modal', {
     attrs: {
-      "header": "Are you sure?"
+      "header": "Delete"
     },
     on: {
       "close": function($event) {
         _vm.deleteModalShown = false
       }
     }
-  }, [_vm._v("\n        Do you really wanna delete this shit?\n    ")]) : _vm._e()], 1)
+  }, [_vm._v("\n        Are you sure you want to delete this entry?\n        "), _c('button', {
+    staticClass: "btn btn-primary",
+    attrs: {
+      "type": "button"
+    },
+    on: {
+      "click": function($event) {
+        _vm.deleteModalShown = false
+      }
+    }
+  }, [_vm._v("Cancel")]), _vm._v(" "), _c('button', {
+    staticClass: "btn btn-danger",
+    attrs: {
+      "type": "button"
+    },
+    on: {
+      "click": _vm.remove
+    }
+  }, [_vm._v("Delete")])]) : _vm._e()], 1)
 },staticRenderFns: []}
 module.exports.render._withStripped = true
 if (false) {
@@ -49711,6 +49760,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = {
     props: ['header'],
@@ -49730,7 +49784,7 @@ exports = module.exports = __webpack_require__(37)();
 
 
 // module
-exports.push([module.i, "\n.modal-mask {\n    position: fixed;\n    z-index: 9998;\n    top: 0;\n    left: 0;\n    width: 100%;\n    height: 100%;\n    background-color: rgba(0, 0, 0, .5);\n    display: table;\n    -webkit-transition: opacity .3s ease;\n    transition: opacity .3s ease;\n}\n.modal-wrapper {\n    display: table-cell;\n    vertical-align: middle;\n}\n.modal-container {\n    width: 500px;\n    margin: 0px auto;\n    padding: 20px 30px;\n    background-color: #fff;\n    border-radius: 2px;\n    box-shadow: 0 2px 8px rgba(0, 0, 0, .33);\n    -webkit-transition: all .3s ease;\n    transition: all .3s ease;\n    font-family: Helvetica, Arial, sans-serif;\n    color: #333;\n    position: relative;\n}\n.modal-header {\n    padding: 0;\n    border-bottom: 0;\n}\n#modal-close-button {\n    position: absolute;\n    top: .2em;\n    right: .4em;\n    cursor: pointer;\n    font-size: 1.1em;\n}\n\n/*****************\n    Transitions\n *****************/\n.modal-enter {\n    opacity: 0;\n}\n.modal-leave-active {\n    opacity: 0;\n}\n.modal-enter .modal-container,\n.modal-leave-active .modal-container {\n    -webkit-transform: scale(1.1);\n    transform: scale(1.1);\n}\n", ""]);
+exports.push([module.i, "\n.modal-mask {\n    position: fixed;\n    z-index: 9998;\n    top: 0;\n    left: 0;\n    width: 100%;\n    height: 100%;\n    background-color: rgba(0, 0, 0, .5);\n    display: table;\n    -webkit-transition: opacity .3s ease;\n    transition: opacity .3s ease;\n}\n.modal-wrapper {\n    display: table-cell;\n    vertical-align: middle;\n}\n.modal-container {\n    width: 500px;\n    margin: 0px auto;\n    padding: 20px 30px;\n    background-color: #fff;\n    border-radius: 2px;\n    box-shadow: 0 2px 8px rgba(0, 0, 0, .33);\n    -webkit-transition: all .3s ease;\n    transition: all .3s ease;\n    font-family: Helvetica, Arial, sans-serif;\n    color: #333;\n    position: relative;\n}\n.modal-header {\n    padding: 0;\n    border-bottom: 0;\n}\n.modal-header h3 {\n    padding-top: 0;\n    margin-top: 0;\n}\n#modal-close-button {\n    position: absolute;\n    top: .2em;\n    right: .4em;\n    cursor: pointer;\n    font-size: 1.1em;\n}\n\n/*****************\n    Transitions\n *****************/\n.modal-enter {\n    opacity: 0;\n}\n.modal-leave-active {\n    opacity: 0;\n}\n.modal-enter .modal-container,\n.modal-leave-active .modal-container {\n    -webkit-transform: scale(1.1);\n    transform: scale(1.1);\n}\n", ""]);
 
 // exports
 

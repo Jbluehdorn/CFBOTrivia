@@ -1,16 +1,19 @@
 <template>
     <div>
         <ul class="list-unstyled form-editor">
-            <li v-for="question in internalForm.questions" class="question">
-                <editable-field v-model="question.body"></editable-field>
-                <ul v-if="question.answers" class="answer">
-                    <li v-for="answer in question.answers" v-if="!answer.deleted">
-                        <editable-field v-model="answer.body"></editable-field>
+            <li v-for="question in internalForm.questions" class="question" v-if="!question.removed">
+                <editable-field v-model="question.body" @remove="remove(question)"></editable-field>
+                <ul v-if="question.answers" class="answer" >
+                    <li v-for="answer in question.answers" v-if="!answer.removed">
+                        <editable-field v-model="answer.body" @remove="remove(answer)"></editable-field>
                     </li>
                     <li>
                         <span class="clickable" @click="addAnswer(question)">Add Answer <i class="fa fa-plus-circle"></i></span>
                     </li>
                 </ul>
+            </li>
+            <li>
+                <span class="clickable" @click="addQuestion">Add Question <i class="fa fa-plus-circle"></i></span>
             </li>
         </ul>
     </div>
@@ -40,6 +43,13 @@
         methods: {
             addAnswer(question) {
                 question.answers.push({});
+            },
+            addQuestion() {
+                this.internalForm.questions.push({answers:[]});
+            },
+            remove(entry) {
+                entry.removed = true;
+                this.$forceUpdate();
             }
         }
     }

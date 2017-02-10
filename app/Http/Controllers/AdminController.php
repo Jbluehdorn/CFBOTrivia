@@ -20,7 +20,7 @@ class AdminController extends Controller
      * Home page for the admin side of the application
      */
     public function index() {
-        $forms = $this->getAllForms();
+        $forms = Form::get();
         return view('admin/all')->with(compact('forms'));
     }
 
@@ -53,7 +53,7 @@ class AdminController extends Controller
      * @return [Form]
      */
     public function getAllForms() {
-        $forms = Form::all();
+        $forms = Form::get();
         return $forms->toArray();
     }
 }

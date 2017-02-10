@@ -13,12 +13,7 @@
                     <h2 class="panel-title">{{$form->title}}</h2>
                 </div>
                 <div class="panel-body">
-                    <h4>Questions</h4>
-                    @if(count($form->questions))
-                        <form-editor :form="{{$form}}"></form-editor>
-                    @else
-                        There's nothing here!
-                    @endif
+                    <form-editor :form="{{$form}}"></form-editor>
                 </div>
             </div>
         @else
