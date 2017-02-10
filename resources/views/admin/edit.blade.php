@@ -3,21 +3,24 @@
 @section('title', $form ? $form->title : 'Not Found')
 
 @section('content')
-
-    {{--{{dd(get_defined_vars())}}--}}
+    {{--
+    This all needs to be change to Vue rather than a blade engine.
+    --}}
     <div class="col-xs-10 col-xs-offset-1">
         @if($form)
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3 class="panel-title">{{$form->title}}</h3>
+                    <h2 class="panel-title">{{$form->title}}</h2>
                 </div>
                 <div class="panel-body">
-
+                    <h4>Questions</h4>
+                    @if(count($form->questions))
+                        <form-editor :form="{{$form}}"></form-editor>
+                    @else
+                        There's nothing here!
+                    @endif
                 </div>
             </div>
-            @foreach($form->questions as $question)
-                {{$question->body}}
-            @endforeach
         @else
             <h1>Error: Form not found</h1>
         @endif

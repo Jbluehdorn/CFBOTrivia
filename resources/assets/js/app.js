@@ -1,4 +1,3 @@
-
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes Vue and other libraries. It is a great starting point when
@@ -15,6 +14,9 @@ require('./bootstrap');
 
 Vue.component('example', require('./components/Example.vue'));
 Vue.component('vue-paginate', require('vue-paginate'));
+Vue.component('form-editor', require('./components/form-editor.vue'));
+Vue.component('editable-field', require('./components/editable-field.vue'));
+Vue.component('modal', require('./components/modal.vue'));
 
 const app = new Vue({
     el: '#app'

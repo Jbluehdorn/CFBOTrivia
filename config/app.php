@@ -22,7 +22,8 @@ return [
     | The location of the logo for the project.
     */
 
-    'logo' => '',
+    'logo_small' => '/logo_small.png',
+    'logo_large' => '/logo_large.png',
 
     /*
     |--------------------------------------------------------------------------

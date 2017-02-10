@@ -10,7 +10,11 @@ class Form extends Model
         'title'
     ];
 
-    public function Questions() {
+    protected $with = [
+        'questions'
+    ];
+
+    public function questions() {
         return $this->hasMany('App\Question');
     }
 }

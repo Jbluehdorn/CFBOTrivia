@@ -53,6 +53,7 @@ class AdminController extends Controller
      * @return [Form]
      */
     public function getAllForms() {
-        return Form::get();
+        $forms = Form::all();
+        return $forms->toArray();
     }
 }

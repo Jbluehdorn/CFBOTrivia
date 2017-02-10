@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/png" href="{{config('app.logo_small', '')}}">
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -26,7 +27,7 @@
     <nav class="navbar navbar-default navbar-static-top">
         <div class="container">
             <div class="navbar-header">
-                <a href="/admin" class="navbar-brand">{{config('app.name', 'CFBOTrivia')}}</a>
+                <a href="/admin" class="navbar-brand"><img src="{{config('app.logo_small', '')}}" class="image-thumbnail" alt="CFBOTrivia"></a>
             </div>
             <div class="collapse navbar-collapse">
                 <ul class="nav navbar-nav">
