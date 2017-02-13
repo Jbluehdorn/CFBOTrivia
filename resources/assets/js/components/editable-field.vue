@@ -3,7 +3,7 @@
         <div v-show="!beingEdited">
             <p>{{internalValue}}
                 <i class="fa fa-pencil clickable" @click="beingEdited = true"></i>
-                <i class="fa fa-close clickable" @click="deleteModalShown = true"></i>
+                <i class="fa fa-trash clickable" @click="deleteModalShown = true"></i>
             </p>
         </div>
         <div v-show="beingEdited">
@@ -17,9 +17,15 @@
         </div>
 
         <modal header="Delete" v-if="deleteModalShown"  @close="deleteModalShown = false">
-            Are you sure you want to delete this entry?
-            <button type="button" class="btn btn-primary" @click="deleteModalShown = false">Cancel</button>
-            <button type="button" class="btn btn-danger" @click="remove">Delete</button>
+            <div class="container-fluid">
+                <div class="col-xs-12">
+                    Are you sure you want to delete this entry?
+                </div>
+                <div class="col-xs-12 modal-button-group">
+                    <button type="button" class="btn btn-primary" @click="deleteModalShown = false">Cancel</button>
+                    <button type="button" class="btn btn-danger" @click="remove">Delete</button>
+                </div>
+            </div>
         </modal>
     </div>
 </template>
@@ -33,7 +39,7 @@
         color: #16BB16;
     }
 
-    .editable-field .fa-close:hover {
+    .editable-field .fa-trash:hover {
         color: #BB1616;
     }
 
@@ -51,6 +57,10 @@
     ._editable_field_input:focus {
         border-bottom: solid 1px #969696;
     }
+
+    .modal-button-group {
+        text-align: right;
+    }
 </style>
 
 <script>
@@ -64,15 +74,14 @@
         },
         props: ['value'],
         watch: {
-            'internalValue': function() {
-                this.$emit('input', this.internalValue);
-            },
             'beingEdited': function() {
                 if(this.beingEdited) {
                     var self = this;
                     Vue.nextTick(function() {
                         self.$refs.editField.focus();
                     });
+                } else {
+                    this.$emit('input', this.internalValue);
                 }
             }
         },
