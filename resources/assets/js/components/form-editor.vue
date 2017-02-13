@@ -1,5 +1,6 @@
 <template>
     <div>
+        <button class="btn btn-primary" @click="setActive">Set Active</button>
         <ul class="list-unstyled form-editor">
             <li v-for="question in internalForm.questions" class="question" v-if="!question.removed">
                 <editable-field v-model="question.body" @remove="remove(question)"></editable-field>
@@ -50,6 +51,22 @@
             remove(entry) {
                 entry.removed = true;
                 this.$forceUpdate();
+            },
+            setActive() {
+                var self = this;
+//                this.$http.post('/admin/setActiveForm', {params: {formId: self.internalForm.id}}).then(response => {
+//                    console.log(response);
+//                }, error => {
+//                    console.log(error);
+//                }
+                axios.post('/admin/setActiveForm', {
+                    formId: self.internalForm.id
+                }).then(response => {
+                    console.log(response);
+                }).catch(error => {
+                    console.log(error);
+                });
+
             }
         }
     }

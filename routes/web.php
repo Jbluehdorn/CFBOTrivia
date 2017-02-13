@@ -19,6 +19,7 @@ Route::group(['prefix' => 'admin'], function() {
     Route::get('/edit/{id}', 'AdminController@editForm');
 
     Route::post('/newForm', 'AdminController@createForm');
+    Route::post('/setActiveForm', 'AdminController@setActiveForm');
 });
 
 Auth::routes();

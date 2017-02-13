@@ -2333,6 +2333,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = {
     mounted: function mounted() {
@@ -2366,6 +2367,21 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         remove: function remove(entry) {
             entry.removed = true;
             this.$forceUpdate();
+        },
+        setActive: function setActive() {
+            var self = this;
+            //                this.$http.post('/admin/setActiveForm', {params: {formId: self.internalForm.id}}).then(response => {
+            //                    console.log(response);
+            //                }, error => {
+            //                    console.log(error);
+            //                }
+            axios.post('/admin/setActiveForm', {
+                formId: self.internalForm.id
+            }).then(function (response) {
+                console.log(response);
+            }).catch(function (error) {
+                console.log(error);
+            });
         }
     }
 };
@@ -32403,7 +32419,12 @@ module.exports = Component.exports
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', [_c('ul', {
+  return _c('div', [_c('button', {
+    staticClass: "btn btn-primary",
+    on: {
+      "click": _vm.setActive
+    }
+  }, [_vm._v("Set Active")]), _vm._v(" "), _c('ul', {
     staticClass: "list-unstyled form-editor"
   }, [_vm._l((_vm.internalForm.questions), function(question) {
     return (!question.removed) ? _c('li', {

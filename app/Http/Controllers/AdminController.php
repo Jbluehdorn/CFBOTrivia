@@ -17,7 +17,9 @@ class AdminController extends Controller
     }
 
     /**
-     * Home page for the admin side of the application
+     * Home page which contains a list of all forms
+     *
+     * @return $this
      */
     public function index() {
         $forms = Form::get();
@@ -25,23 +27,33 @@ class AdminController extends Controller
     }
 
     /**
-     * New form page
+     * View for the new Form page
+     *
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function newForm() {
         return view('admin/new');
     }
 
 
+    /**
+     * Create a new form and then go to the edit page
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
     public function createForm(Request $request) {
         $form = new Form($request->all());
         $form->save();
 
-        return $form;
+        return redirect('/admin/edit/' . $form->id);
     }
 
     /**
-     * Edit a form
+     * Go to the form edit page for a requested id
+     *
      * @param $id
+     * @return $this
      */
     public function editForm($id) {
         $form = Form::find($id);
@@ -55,5 +67,17 @@ class AdminController extends Controller
     public function getAllForms() {
         $forms = Form::get();
         return $forms->toArray();
+    }
+
+    public function setActiveForm(Request $request) {
+        $id = $request->formId;
+
+        $forms = Form::get();
+        foreach($forms as $form) {
+            $form->isActive = $form->id == $id;
+            $form->save();
+        }
+
+        return $forms;
     }
 }
