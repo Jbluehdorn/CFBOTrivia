@@ -148,6 +148,10 @@ class AdminController extends Controller
             }
         }
 
+        $saveForm = Form::find($form['id']);
+        $saveForm->rules_blurb = $form['rules_blurb'];
+        $saveForm->save();
+
         return $form;
     }
 }

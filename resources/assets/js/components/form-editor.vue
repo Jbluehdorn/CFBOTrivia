@@ -1,16 +1,29 @@
 <template>
     <div>
-        <span v-if="form.isActive">Active Form</span>
-        <span class="clickable" @click="setActive" v-else>Click Here to Set Active</span>
+        <span v-if="form.isActive">This is the <strong class="text-success">Active</strong> Form</span>
+        <div v-else>
+            <span>This is an <strong class="text-danger">Inactive</strong> Form</span> <br>
+            <span class="clickable" @click="setActive">Click <strong>Here</strong> to make this form Active</span>
+        </div>
+
         <span v-show="saving"><i class="fa fa-spin fa-cog"></i> Saving...</span>
         <span v-show="saveSuccessful" class="text-success"><i class="fa fa-check"></i> All Changes Saved!</span>
         <span v-show="saveFailed" class="text-danger"><i class="fa fa-exclamation"></i> Save Failed</span>
+
+        <hr>
+
+        <h4>Rules Blurb:</h4>
+        <editable-field type="textarea" v-model="internalForm.rules_blurb" @input="setValue(internalForm.rules_blurb, arguments[0])"></editable-field>
+
+        <hr>
+
+        <h4>Questions:</h4>
         <ul class="list-unstyled form-editor">
             <li v-for="question in internalForm.questions" class="question" v-if="question.type != 'destroy'">
-                <editable-field v-model="question.body" @input="setValue(question, arguments[0])" @remove="remove(question)"></editable-field>
+                <editable-field type="field" v-model="question.body" @input="setValue(question, arguments[0])" @remove="remove(question)"></editable-field>
                 <ul v-if="question.answers" class="answer" >
                     <li v-for="answer in question.answers" v-if="answer.type != 'destroy'">
-                        <editable-field v-model="answer.body" @input="setValue(answer, arguments[0])" @remove="remove(answer)"></editable-field>
+                        <editable-field type="field" v-model="answer.body" @input="setValue(answer, arguments[0])" @remove="remove(answer)"></editable-field>
                     </li>
                     <li>
                         <span class="clickable" @click="addAnswer(question)">Add Answer <i class="fa fa-plus-circle"></i></span>
@@ -57,7 +70,11 @@
                 this.$forceUpdate();
             },
             setValue(entry, value) {
-                entry.body = value;
+                if(typeof entry !== 'object') {
+                    entry = value;
+                } else {
+                    entry.body = value;
+                }
                 this.saveForm();
             },
             setActive() {
@@ -72,6 +89,7 @@
 
             },
             saveForm() {
+                let self = this;
                 this.saving = true;
                 this.saveSuccessful = false;
                 this.saveFailed = false;
@@ -80,11 +98,18 @@
                 }).then(response => {
                     this.saving = false;
                     this.saveSuccessful = true;
+
+                    setTimeout(function() {
+                        self.saveSuccessful = false;
+                    }, 3000);
                     this.resetForm();
                     console.log(response);
                 }).catch(error => {
                     this.saving = false;
                     this.saveFailed = true;
+                    setTimeout(function() {
+                        self.saveFailed = false;
+                    }, 3000);
                     console.log(error);
                 });
             },

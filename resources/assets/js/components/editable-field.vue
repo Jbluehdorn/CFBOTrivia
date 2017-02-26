@@ -6,7 +6,7 @@
                 <i class="fa fa-trash clickable" @click="deleteModalShown = true"></i>
             </p>
         </div>
-        <div v-show="beingEdited">
+        <div v-show="beingEdited" v-if="type==='field'">
             <input
                     type="text"
                     class="_editable_field_input"
@@ -14,6 +14,14 @@
                     @keyup.enter="beingEdited = false"
                     ref="editField">
             <i class="fa fa-check clickable" @click="beingEdited = false"></i>
+        </div>
+        <div v-show="beingEdited" v-if="type==='textarea'">
+            <textarea
+                    class="form-control"
+                    v-model="internalValue"
+                    @keyup.enter="beingEdited = false"
+                    ref="editField"></textarea>
+            <small>(Press <strong>Enter</strong> when done)</small>
         </div>
 
         <modal header="Delete" v-if="deleteModalShown"  @close="deleteModalShown = false">
@@ -72,7 +80,7 @@
                 internalValue: ''
             }
         },
-        props: ['value'],
+        props: ['value', 'type'],
         watch: {
             'beingEdited': function() {
                 if(this.beingEdited) {
@@ -81,7 +89,8 @@
                         self.$refs.editField.focus();
                     });
                 } else {
-                    this.$emit('input', this.internalValue);
+                    if(this.internalValue != this.value)
+                        this.$emit('input', this.internalValue);
                 }
             }
         },

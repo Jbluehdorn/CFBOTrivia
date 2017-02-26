@@ -2271,6 +2271,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = {
     data: function data() {
@@ -2281,7 +2289,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         };
     },
 
-    props: ['value'],
+    props: ['value', 'type'],
     watch: {
         'beingEdited': function beingEdited() {
             if (this.beingEdited) {
@@ -2290,7 +2298,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                     self.$refs.editField.focus();
                 });
             } else {
-                this.$emit('input', this.internalValue);
+                if (this.internalValue != this.value) this.$emit('input', this.internalValue);
             }
         }
     },
@@ -2312,6 +2320,21 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -2373,7 +2396,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.$forceUpdate();
         },
         setValue: function setValue(entry, value) {
-            entry.body = value;
+            if ((typeof entry === 'undefined' ? 'undefined' : _typeof(entry)) !== 'object') {
+                entry = value;
+            } else {
+                entry.body = value;
+            }
             this.saveForm();
         },
         setActive: function setActive() {
@@ -2391,6 +2418,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         saveForm: function saveForm() {
             var _this2 = this;
 
+            var self = this;
             this.saving = true;
             this.saveSuccessful = false;
             this.saveFailed = false;
@@ -2399,11 +2427,18 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             }).then(function (response) {
                 _this2.saving = false;
                 _this2.saveSuccessful = true;
+
+                setTimeout(function () {
+                    self.saveSuccessful = false;
+                }, 3000);
                 _this2.resetForm();
                 console.log(response);
             }).catch(function (error) {
                 _this2.saving = false;
                 _this2.saveFailed = true;
+                setTimeout(function () {
+                    self.saveFailed = false;
+                }, 3000);
                 console.log(error);
             });
         },
@@ -32453,12 +32488,16 @@ module.exports = Component.exports
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', [(_vm.form.isActive) ? _c('span', [_vm._v("Active Form")]) : _c('span', {
+  return _c('div', [(_vm.form.isActive) ? _c('span', [_vm._v("This is the "), _c('strong', {
+    staticClass: "text-success"
+  }, [_vm._v("Active")]), _vm._v(" Form")]) : _c('div', [_c('span', [_vm._v("This is an "), _c('strong', {
+    staticClass: "text-danger"
+  }, [_vm._v("Inactive")]), _vm._v(" Form")]), _vm._v(" "), _c('br'), _vm._v(" "), _c('span', {
     staticClass: "clickable",
     on: {
       "click": _vm.setActive
     }
-  }, [_vm._v("Click Here to Set Active")]), _vm._v(" "), _c('span', {
+  }, [_vm._v("Click "), _c('strong', [_vm._v("Here")]), _vm._v(" to make this form Active")])]), _vm._v(" "), _c('span', {
     directives: [{
       name: "show",
       rawName: "v-show",
@@ -32487,7 +32526,27 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "text-danger"
   }, [_c('i', {
     staticClass: "fa fa-exclamation"
-  }), _vm._v(" Save Failed")]), _vm._v(" "), _c('ul', {
+  }), _vm._v(" Save Failed")]), _vm._v(" "), _c('hr'), _vm._v(" "), _c('h4', [_vm._v("Rules Blurb:")]), _vm._v(" "), _c('editable-field', {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: (_vm.internalForm.rules_blurb),
+      expression: "internalForm.rules_blurb"
+    }],
+    attrs: {
+      "type": "textarea"
+    },
+    domProps: {
+      "value": (_vm.internalForm.rules_blurb)
+    },
+    on: {
+      "input": [function($event) {
+        _vm.internalForm.rules_blurb = $event
+      }, function($event) {
+        _vm.setValue(_vm.internalForm.rules_blurb, arguments[0])
+      }]
+    }
+  }), _vm._v(" "), _c('hr'), _vm._v(" "), _c('h4', [_vm._v("Questions:")]), _vm._v(" "), _c('ul', {
     staticClass: "list-unstyled form-editor"
   }, [_vm._l((_vm.internalForm.questions), function(question) {
     return (question.type != 'destroy') ? _c('li', {
@@ -32499,6 +32558,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         value: (question.body),
         expression: "question.body"
       }],
+      attrs: {
+        "type": "field"
+      },
       domProps: {
         "value": (question.body)
       },
@@ -32522,6 +32584,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
           value: (answer.body),
           expression: "answer.body"
         }],
+        attrs: {
+          "type": "field"
+        },
         domProps: {
           "value": (answer.body)
         },
@@ -32553,7 +32618,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }, [_vm._v("Add Question "), _c('i', {
     staticClass: "fa fa-plus-circle"
-  })])])], 2)])
+  })])])], 2)], 1)
 },staticRenderFns: []}
 module.exports.render._withStripped = true
 if (false) {
@@ -32628,7 +32693,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         _vm.deleteModalShown = true
       }
     }
-  })])]), _vm._v(" "), _c('div', {
+  })])]), _vm._v(" "), (_vm.type === 'field') ? _c('div', {
     directives: [{
       name: "show",
       rawName: "v-show",
@@ -32667,7 +32732,36 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         _vm.beingEdited = false
       }
     }
-  })]), _vm._v(" "), (_vm.deleteModalShown) ? _c('modal', {
+  })]) : _vm._e(), _vm._v(" "), (_vm.type === 'textarea') ? _c('div', {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: (_vm.beingEdited),
+      expression: "beingEdited"
+    }]
+  }, [_c('textarea', {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: (_vm.internalValue),
+      expression: "internalValue"
+    }],
+    ref: "editField",
+    staticClass: "form-control",
+    domProps: {
+      "value": _vm._s(_vm.internalValue)
+    },
+    on: {
+      "keyup": function($event) {
+        if (_vm._k($event.keyCode, "enter", 13)) { return; }
+        _vm.beingEdited = false
+      },
+      "input": function($event) {
+        if ($event.target.composing) { return; }
+        _vm.internalValue = $event.target.value
+      }
+    }
+  }), _vm._v(" "), _vm._m(0)]) : _vm._e(), _vm._v(" "), (_vm.deleteModalShown) ? _c('modal', {
     attrs: {
       "header": "Delete"
     },
@@ -32701,7 +32795,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "click": _vm.remove
     }
   }, [_vm._v("Delete")])])])]) : _vm._e()], 1)
-},staticRenderFns: []}
+},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('small', [_vm._v("(Press "), _c('strong', [_vm._v("Enter")]), _vm._v(" when done)")])
+}]}
 module.exports.render._withStripped = true
 if (false) {
   module.hot.accept()

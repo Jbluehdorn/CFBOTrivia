@@ -3,9 +3,6 @@
 @section('title', $form ? $form->title : 'Not Found')
 
 @section('content')
-    {{--
-    This all needs to be change to Vue rather than a blade engine.
-    --}}
     <div class="col-xs-10 col-xs-offset-1">
         @if($form)
             <div class="panel panel-default">
