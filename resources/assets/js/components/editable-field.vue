@@ -93,7 +93,7 @@
         },
         created() {
             this.internalValue = this.value;
-            this.beingEdited = this.value === undefined;
+            this.beingEdited = this.value === '';
         }
     }
 </script>

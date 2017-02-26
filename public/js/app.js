@@ -2302,7 +2302,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
     created: function created() {
         this.internalValue = this.value;
-        this.beingEdited = this.value === undefined;
+        this.beingEdited = this.value === '';
     }
 };
 
@@ -2334,53 +2334,87 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = {
     mounted: function mounted() {
-        this.internalForm = this.form;
         console.log('form-editor component initialized');
+    },
+    created: function created() {
+        this.internalForm = this.form;
+        this.resetForm();
+        this.created = true;
     },
 
     props: ['form'],
     data: function data() {
         return {
-            internalForm: {}
+            internalForm: {},
+            saving: false,
+            saveSuccessful: false,
+            saveFailed: false,
+            created: false
         };
     },
 
-    watch: {
-        //Save form anytime anything changes
-        'internalForm': {
-            handler: function handler() {
-                //TODO: Flesh out save function
-            },
-            deep: true
-        }
-    },
     methods: {
         addAnswer: function addAnswer(question) {
-            question.answers.push({});
+            question.answers.push({ type: 'new', body: '' });
         },
         addQuestion: function addQuestion() {
-            this.internalForm.questions.push({ answers: [] });
+            this.internalForm.questions.push({ answers: [], type: 'new', body: '' });
         },
         remove: function remove(entry) {
-            entry.removed = true;
+            entry.type = 'destroy';
+            this.saveForm();
             this.$forceUpdate();
         },
+        setValue: function setValue(entry, value) {
+            entry.body = value;
+            this.saveForm();
+        },
         setActive: function setActive() {
-            var self = this;
-            //                this.$http.post('/admin/setActiveForm', {params: {formId: self.internalForm.id}}).then(response => {
-            //                    console.log(response);
-            //                }, error => {
-            //                    console.log(error);
-            //                }
+            var _this = this;
+
             axios.post('/admin/setActiveForm', {
-                formId: self.internalForm.id
+                formId: this.internalForm.id
             }).then(function (response) {
-                console.log(response);
+                _this.internalForm.isActive = true;
+                _this.$forceUpdate();
             }).catch(function (error) {
                 console.log(error);
+            });
+        },
+        saveForm: function saveForm() {
+            var _this2 = this;
+
+            this.saving = true;
+            this.saveSuccessful = false;
+            this.saveFailed = false;
+            axios.post('/admin/saveFormChanges', {
+                form: this.internalForm
+            }).then(function (response) {
+                _this2.saving = false;
+                _this2.saveSuccessful = true;
+                _this2.resetForm();
+                console.log(response);
+            }).catch(function (error) {
+                _this2.saving = false;
+                _this2.saveFailed = true;
+                console.log(error);
+            });
+        },
+
+        //Return the form to update state
+        resetForm: function resetForm() {
+            this.internalForm.questions.forEach(function (question) {
+                if (question.type !== 'destroy' && question.body !== '') question.type = 'update';
+                question.answers.forEach(function (answer) {
+                    if (answer.type !== 'destroy' && answer.body !== '') answer.type = 'update';
+                });
             });
         }
     }
@@ -32419,15 +32453,44 @@ module.exports = Component.exports
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', [_c('button', {
-    staticClass: "btn btn-primary",
+  return _c('div', [(_vm.form.isActive) ? _c('span', [_vm._v("Active Form")]) : _c('span', {
+    staticClass: "clickable",
     on: {
       "click": _vm.setActive
     }
-  }, [_vm._v("Set Active")]), _vm._v(" "), _c('ul', {
+  }, [_vm._v("Click Here to Set Active")]), _vm._v(" "), _c('span', {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: (_vm.saving),
+      expression: "saving"
+    }]
+  }, [_c('i', {
+    staticClass: "fa fa-spin fa-cog"
+  }), _vm._v(" Saving...")]), _vm._v(" "), _c('span', {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: (_vm.saveSuccessful),
+      expression: "saveSuccessful"
+    }],
+    staticClass: "text-success"
+  }, [_c('i', {
+    staticClass: "fa fa-check"
+  }), _vm._v(" All Changes Saved!")]), _vm._v(" "), _c('span', {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: (_vm.saveFailed),
+      expression: "saveFailed"
+    }],
+    staticClass: "text-danger"
+  }, [_c('i', {
+    staticClass: "fa fa-exclamation"
+  }), _vm._v(" Save Failed")]), _vm._v(" "), _c('ul', {
     staticClass: "list-unstyled form-editor"
   }, [_vm._l((_vm.internalForm.questions), function(question) {
-    return (!question.removed) ? _c('li', {
+    return (question.type != 'destroy') ? _c('li', {
       staticClass: "question"
     }, [_c('editable-field', {
       directives: [{
@@ -32440,17 +32503,19 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         "value": (question.body)
       },
       on: {
+        "input": [function($event) {
+          question.body = $event
+        }, function($event) {
+          _vm.setValue(question, arguments[0])
+        }],
         "remove": function($event) {
           _vm.remove(question)
-        },
-        "input": function($event) {
-          question.body = $event
         }
       }
     }), _vm._v(" "), (question.answers) ? _c('ul', {
       staticClass: "answer"
     }, [_vm._l((question.answers), function(answer) {
-      return (!answer.removed) ? _c('li', [_c('editable-field', {
+      return (answer.type != 'destroy') ? _c('li', [_c('editable-field', {
         directives: [{
           name: "model",
           rawName: "v-model",
@@ -32461,11 +32526,13 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
           "value": (answer.body)
         },
         on: {
+          "input": [function($event) {
+            answer.body = $event
+          }, function($event) {
+            _vm.setValue(answer, arguments[0])
+          }],
           "remove": function($event) {
             _vm.remove(answer)
-          },
-          "input": function($event) {
-            answer.body = $event
           }
         }
       })], 1) : _vm._e()

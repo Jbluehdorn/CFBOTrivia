@@ -20,6 +20,7 @@ Route::group(['prefix' => 'admin'], function() {
 
     Route::post('/newForm', 'AdminController@createForm');
     Route::post('/setActiveForm', 'AdminController@setActiveForm');
+    Route::post('/saveFormChanges', 'AdminController@saveFormChanges');
 });
 
 Auth::routes();

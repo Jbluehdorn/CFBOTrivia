@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Form;
+use App\Answer;
+use App\Question;
 
 class AdminController extends Controller
 {
@@ -69,6 +71,12 @@ class AdminController extends Controller
         return $forms->toArray();
     }
 
+    /**
+     * Set a form as the active form and the rest to inactive
+     *
+     * @param Request $request
+     * @return [Form]
+     */
     public function setActiveForm(Request $request) {
         $id = $request->formId;
 
@@ -79,5 +87,67 @@ class AdminController extends Controller
         }
 
         return $forms;
+    }
+
+    public function saveFormChanges(Request $request) {
+        $form = $request->form;
+
+        foreach(request('form.questions') as $question) {
+            $questionObj = new Question();
+
+            switch($question['type']) {
+                case 'new':
+                    $questionObj->body = $question['body'];
+                    $questionObj->form_id = $form['id'];
+                    $questionObj->save();
+                    break;
+                case 'update':
+                    $questionObj = isset($question['id']) ? Question::find($question['id']) :
+                        Question::where('form_id', $form['id'])
+                            ->where('body', $question['body'])
+                            ->first();
+                    $questionObj->body = $question['body'];
+                    $questionObj->save();
+                    break;
+                case 'destroy':
+                    $questionObj = isset($question['id']) ? Question::find($question['id']) :
+                        Question::where('form_id', $form['id'])
+                            ->where('body', $question['body'])
+                            ->first();
+                    if(count($questionObj) > 0) {
+                        $questionObj->delete();
+                    }
+                    break;
+            }
+
+            //Verify the question exists before trying to loop through it
+            if(count($questionObj) > 0) {
+                foreach ($question['answers'] as $answer) {
+                    switch ($answer['type']) {
+                        case 'new':
+                            $answerObj = new Answer();
+                            $answerObj->question_id = $questionObj->id;
+                            $answerObj->body = $answer['body'] ?? '';
+                            $answerObj->save();
+                            break;
+                        case 'update':
+                            $answerObj = isset($answer['id']) ? Answer::find($answer['id']) :
+                                Answer::where('body', $answer['body'])->first();
+                            $answerObj->body = $answer['body'] ?? '';
+                            $answerObj->save();
+                            break;
+                        case 'destroy':
+                            $answerObj = isset($answer['id']) ? Answer::find($answer['id']) :
+                                Answer::where('body', $answer['body'])->first();
+                            if(count($answerObj) > 0) {
+                                $answerObj->delete();
+                            }
+                            break;
+                    }
+                }
+            }
+        }
+
+        return $form;
     }
 }
