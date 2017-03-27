@@ -12,8 +12,12 @@
 */
 
 Route::get('/', 'HomeController@index');
+Route::get('/logout', 'HomeController@logout');
+Route::get('/newAccount', function() {
+   return view('auth/register');
+});
 
-Route::group(['prefix' => 'admin'], function() {
+Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'CheckAdmin']], function() {
     Route::get('/', 'AdminController@index');
     Route::get('/newForm', 'AdminController@newForm');
     Route::get('/edit/{id}', 'AdminController@editForm');
@@ -21,6 +25,19 @@ Route::group(['prefix' => 'admin'], function() {
     Route::post('/newForm', 'AdminController@createForm');
     Route::post('/setActiveForm', 'AdminController@setActiveForm');
     Route::post('/saveFormChanges', 'AdminController@saveFormChanges');
+
+    /*
+     * Grading routes
+     */
+    Route::get('/grading', 'GradingController@home');
+    Route::get('/grading/{id}', 'GradingController@gradeForm');
+});
+
+/*
+ * Errors
+ */
+Route::get('/unauthorized', function() {
+    return view('errors/unauthorized');
 });
 
 Auth::routes();

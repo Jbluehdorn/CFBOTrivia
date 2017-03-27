@@ -2361,6 +2361,8 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 //
 //
 //
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = {
     mounted: function mounted() {
@@ -32488,9 +32490,9 @@ module.exports = Component.exports
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', [(_vm.form.isActive) ? _c('span', [_vm._v("This is the "), _c('strong', {
+  return _c('div', [(_vm.form.isActive) ? _c('div', [_vm._v("\n        This is the "), _c('strong', {
     staticClass: "text-success"
-  }, [_vm._v("Active")]), _vm._v(" Form")]) : _c('div', [_c('span', [_vm._v("This is an "), _c('strong', {
+  }, [_vm._v("Active")]), _vm._v(" Form\n    ")]) : _c('div', [_c('span', [_vm._v("This is an "), _c('strong', {
     staticClass: "text-danger"
   }, [_vm._v("Inactive")]), _vm._v(" Form")]), _vm._v(" "), _c('br'), _vm._v(" "), _c('span', {
     staticClass: "clickable",

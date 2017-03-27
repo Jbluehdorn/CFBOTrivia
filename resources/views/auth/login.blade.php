@@ -54,6 +54,8 @@
                                     Login
                                 </button>
 
+                                <a href="/newAccount" class="btn btn-success">New Account</a>
+
                                 <a class="btn btn-link" href="{{ route('password.request') }}">
                                     Forgot Your Password?
                                 </a>

@@ -33,6 +33,8 @@
                 <ul class="nav navbar-nav">
                     <li><a href="/admin">All</a></li>
                     <li><a href="/admin/newForm">New</a></li>
+                    <li><a href="/admin/grading">Grading</a></li>
+                    <li><a href="/logout">Logout <i class="fa fa-sign-out" title="Logout"></i></a></li>
                 </ul>
             </div>
         </div>

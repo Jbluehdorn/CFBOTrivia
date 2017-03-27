@@ -1,6 +1,8 @@
 <template>
     <div>
-        <span v-if="form.isActive">This is the <strong class="text-success">Active</strong> Form</span>
+        <div v-if="form.isActive">
+            This is the <strong class="text-success">Active</strong> Form
+        </div>
         <div v-else>
             <span>This is an <strong class="text-danger">Inactive</strong> Form</span> <br>
             <span class="clickable" @click="setActive">Click <strong>Here</strong> to make this form Active</span>

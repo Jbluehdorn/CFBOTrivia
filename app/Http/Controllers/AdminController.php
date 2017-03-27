@@ -10,15 +10,6 @@ use App\Question;
 class AdminController extends Controller
 {
     /**
-     * AdminController constructor
-     * Middleware: Authentication
-     */
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-
-    /**
      * Home page which contains a list of all forms
      *
      * @return $this

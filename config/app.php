@@ -26,6 +26,33 @@ return [
     'logo_large' => '/logo_large.png',
 
     /*
+    |----------------------------------------------------------------------------
+    | Google OAuth 2.0 access
+    |----------------------------------------------------------------------------
+    |
+    | Keys for OAuth 2.0 access, see the API console at
+    | https://developers.google.com/console
+    |
+    */
+    'client_id' => '324581017345-fk7a4ve9sdif4mut52ehi8rsaq6rqmnr.apps.googleusercontent.com ',
+    'client_secret' => 'MhOuLPZm0ViF2ssasRtZzYcf ',
+    'redirect_uri' => '',
+    'scopes' => [],
+    'access_type' => 'online',
+    'approval_prompt' => 'auto',
+
+    /*
+    |----------------------------------------------------------------------------
+    | Google developer key
+    |----------------------------------------------------------------------------
+    |
+    | Simple API access key, also from the API console. Ensure you get
+    | a Server key, and not a Browser key.
+    |
+    */
+    'developer_key' => ' AIzaSyAGNpu3olyIIq4lGR7UvqNO8Qhx9mJi948',
+
+    /*
     |--------------------------------------------------------------------------
     | Application Environment
     |--------------------------------------------------------------------------
@@ -188,6 +215,11 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        /*
+         * Google Sheets Providers
+         */
+        PulkitJalan\Google\GoogleServiceProvider::class,
+        GoogleSheets\Providers\SheetsServiceProvider::class,
     ],
 
     /*
@@ -236,7 +268,8 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
-
+        'Google' => PulkitJalan\Google\Facades\Google::class,
+        'Sheets' => GoogleSheets\Facades\Sheets::class
     ],
 
 ];
