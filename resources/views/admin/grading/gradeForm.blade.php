@@ -30,10 +30,21 @@
                                 <thead>
                                 <tr>
                                     <th>Username</th>
+                                    <th>Answer</th>
                                     <th>Mark Correct</th>
                                     <th>Mark Wrong</th>
                                 </tr>
                                 </thead>
+                                <tbody>
+                                @foreach($question->submittedAnswers as $answer)
+                                    <tr>
+                                        <td>{{$answer->User->name}}</td>
+                                        <td>{{$answer->body}}</td>
+                                        <td><i class="fa fa-check clickable"></i></td>
+                                        <td><i class="fa fa-ban clickable"></i></td>
+                                    </tr>
+                                @endforeach
+                                </tbody>
                             </table>
                         </div>
                     </div>

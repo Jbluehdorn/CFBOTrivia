@@ -10,9 +10,13 @@ class Question extends Model
         'body', 'form_id'
     ];
 
-    protected $with = ['answers'];
+    protected $with = ['answers', 'submittedAnswers'];
 
     public function answers() {
         return $this->hasMany('App\Answer');
+    }
+
+    public function submittedAnswers() {
+        return $this->hasMany('App\SubmittedAnswer');
     }
 }
