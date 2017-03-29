@@ -19,6 +19,7 @@ class CreateSubmittedAnswersTable extends Migration
             $table->integer('user_id');
             $table->string('body')->default('');
             $table->boolean('correct')->default(false);
+            $table->boolean('notable')->default(false);
         });
     }
 

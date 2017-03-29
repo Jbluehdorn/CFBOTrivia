@@ -14,41 +14,7 @@
                     <h3>{{$form->title}}</h3>
                 </div>
                 <div class="panel-body">
-                    @foreach($form->questions as $question)
-                    <div class="panel panel-default" class="question">
-                        <div class="panel-heading">
-                            <h5>{{$question->body}}</h5>
-
-                        </div>
-                        <div class="panel-body">
-                            <strong>Accepted Answers:</strong>
-                            @for($i = 0; $i < count($question->answers); $i++)
-                                <span class="answer">{{$question->answers[$i]->body}}{{$i != count($question->answers) - 1 ? ',' : ''}}</span>
-                            @endfor
-
-                            <table class="table">
-                                <thead>
-                                <tr>
-                                    <th>Username</th>
-                                    <th>Answer</th>
-                                    <th>Mark Correct</th>
-                                    <th>Mark Wrong</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                @foreach($question->submittedAnswers as $answer)
-                                    <tr>
-                                        <td>{{$answer->User->name}}</td>
-                                        <td>{{$answer->body}}</td>
-                                        <td><i class="fa fa-check clickable"></i></td>
-                                        <td><i class="fa fa-ban clickable"></i></td>
-                                    </tr>
-                                @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    @endforeach
+                    <grading-form :form="{{$form}}"></grading-form>
                 </div>
             @endif
         </div>

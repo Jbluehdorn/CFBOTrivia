@@ -1318,6 +1318,7 @@ Vue.component('example', __webpack_require__(42));
 Vue.component('vue-paginate', __webpack_require__(50));
 Vue.component('form-editor', __webpack_require__(44));
 Vue.component('editable-field', __webpack_require__(43));
+Vue.component('grading-form', __webpack_require__(70));
 Vue.component('modal', __webpack_require__(45));
 
 var app = new Vue({
@@ -50077,6 +50078,175 @@ module.exports = function(module) {
 __webpack_require__(12);
 module.exports = __webpack_require__(13);
 
+
+/***/ }),
+/* 58 */,
+/* 59 */,
+/* 60 */,
+/* 61 */,
+/* 62 */,
+/* 63 */,
+/* 64 */,
+/* 65 */,
+/* 66 */,
+/* 67 */,
+/* 68 */,
+/* 69 */,
+/* 70 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Component = __webpack_require__(2)(
+  /* script */
+  __webpack_require__(71),
+  /* template */
+  __webpack_require__(72),
+  /* scopeId */
+  null,
+  /* cssModules */
+  null
+)
+Component.options.__file = "/Users/Jordan/sites/CFBOTrivia/resources/assets/js/components/grading-form.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] grading-form.vue: functional components are not supported with templates, they should use render functions.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-c5b01238", Component.options)
+  } else {
+    hotAPI.reload("data-v-c5b01238", Component.options)
+  }
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 71 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = {
+    mounted: function mounted() {
+        console.log('grading-form mounted');
+    },
+
+    props: ['form'],
+    data: function data() {
+        return {
+            internalForm: {},
+            saving: false,
+            saveFailed: false,
+            saveSuccessful: false,
+            created: false
+        };
+    },
+    created: function created() {
+        this.internalForm = this.form;
+        this.created = true;
+    }
+};
+
+/***/ }),
+/* 72 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', _vm._l((_vm.internalForm.questions), function(question) {
+    return _c('div', {
+      staticClass: "panel panel-default"
+    }, [_c('div', {
+      staticClass: "panel-heading"
+    }, [_c('h5', [_vm._v(_vm._s(question.body))])]), _vm._v(" "), _c('div', {
+      staticClass: "panel-body"
+    }, [_c('strong', [_vm._v("Accepted Answers:")]), _vm._v(" "), _vm._l((question.answers), function(answer, key) {
+      return _c('span', {
+        staticClass: "answer"
+      }, [_vm._v(_vm._s(answer.body) + _vm._s(key != question.answers.length - 1 ? ',' : '') + " ")])
+    }), _vm._v(" "), _c('table', {
+      staticClass: "table"
+    }, [_vm._m(0, true), _vm._v(" "), _c('tbody', _vm._l((question.submitted_answers), function(answer) {
+      return _c('tr', {
+        class: answer.correct ? 'table-success' : (answer.notable ? 'table-warning' : 'table-danger')
+      }, [_c('td', [_vm._v(_vm._s(answer.user.name))]), _vm._v(" "), _c('td', [_vm._v(_vm._s(answer.body))]), _vm._v(" "), _vm._m(1, true), _vm._v(" "), _vm._m(2, true), _vm._v(" "), _vm._m(3, true)])
+    }))])], 2)])
+  }))
+},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('thead', [_c('tr', [_c('th', [_vm._v("Username")]), _vm._v(" "), _c('th', [_vm._v("Answer")]), _vm._v(" "), _c('th', {
+    staticClass: "align-center"
+  }, [_vm._v("Mark Correct")]), _vm._v(" "), _c('th', {
+    staticClass: "align-center"
+  }, [_vm._v("Mark Wrong")]), _vm._v(" "), _c('th', {
+    staticClass: "align-center"
+  }, [_vm._v("Mark Notable")])])])
+},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('td', {
+    staticClass: "align-center"
+  }, [_c('i', {
+    staticClass: "fa fa-check clickable correct"
+  })])
+},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('td', {
+    staticClass: "align-center"
+  }, [_c('i', {
+    staticClass: "fa fa-ban clickable wrong"
+  })])
+},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('td', {
+    staticClass: "align-center"
+  }, [_c('i', {
+    staticClass: "fa fa-star clickable notable"
+  })])
+}]}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-hot-reload-api").rerender("data-v-c5b01238", module.exports)
+  }
+}
 
 /***/ })
 /******/ ]);
