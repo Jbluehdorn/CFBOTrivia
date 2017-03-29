@@ -50180,12 +50180,24 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             saving: false,
             saveFailed: false,
             saveSuccessful: false,
-            created: false
+            created: false,
+            clicks: 0
         };
     },
     created: function created() {
         this.internalForm = this.form;
         this.created = true;
+
+        this.internalForm.questions.forEach(function (question) {
+            question.hidden = true;
+        });
+    },
+
+    methods: {
+        toggleQuestion: function toggleQuestion(question) {
+            question.hidden = !question.hidden;
+            this.$forceUpdate();
+        }
     }
 };
 
@@ -50199,7 +50211,23 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       staticClass: "panel panel-default"
     }, [_c('div', {
       staticClass: "panel-heading"
-    }, [_c('h5', [_vm._v(_vm._s(question.body))])]), _vm._v(" "), _c('div', {
+    }, [_c('h5', [_vm._v(_vm._s(question.body) + " "), _c('span', {
+      staticClass: "clickable pull-right",
+      on: {
+        "click": function($event) {
+          _vm.toggleQuestion(question)
+        }
+      }
+    }, [_c('i', {
+      staticClass: "fa",
+      class: question.hidden ? 'fa-plus' : 'fa-minus'
+    })])])]), _vm._v(" "), _c('div', {
+      directives: [{
+        name: "show",
+        rawName: "v-show",
+        value: (!question.hidden),
+        expression: "!question.hidden"
+      }],
       staticClass: "panel-body"
     }, [_c('strong', [_vm._v("Accepted Answers:")]), _vm._v(" "), _vm._l((question.answers), function(answer, key) {
       return _c('span', {

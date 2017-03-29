@@ -2,10 +2,10 @@
     <div>
         <div class="panel panel-default" v-for="question in internalForm.questions">
             <div class="panel-heading">
-                <h5>{{question.body}}</h5>
+                <h5>{{question.body}} <span v-on:click="toggleQuestion(question)" class="clickable pull-right"><i class="fa" :class="question.hidden ? 'fa-plus' : 'fa-minus'"></i></span></h5>
             </div>
 
-            <div class="panel-body">
+            <div class="panel-body" v-show="!question.hidden">
                 <strong>Accepted Answers:</strong>
                 <span class="answer" v-for="(answer, key) in question.answers">{{answer.body}}{{key != question.answers.length - 1 ? ',' : ''}} </span>
                 <table class="table">
@@ -46,12 +46,23 @@
                 saving: false,
                 saveFailed: false,
                 saveSuccessful: false,
-                created: false
+                created: false,
+                clicks: 0
             }
         },
         created() {
             this.internalForm = this.form;
             this.created = true;
+
+            this.internalForm.questions.forEach(function(question) {
+               question.hidden = true;
+            });
+        },
+        methods: {
+            toggleQuestion(question) {
+                question.hidden = !question.hidden;
+                this.$forceUpdate();
+            }
         }
     }
 </script>
