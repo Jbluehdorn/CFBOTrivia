@@ -1321,8 +1321,23 @@ Vue.component('editable-field', __webpack_require__(43));
 Vue.component('grading-form', __webpack_require__(70));
 Vue.component('modal', __webpack_require__(45));
 
+Vue.filter('percentage', function (value, decimals) {
+    if (!value) {
+        value = 0;
+    }
+
+    if (!decimals) {
+        decimals = 2;
+    }
+
+    value = value * 100;
+    value = Math.round(value * Math.pow(10, decimals)) / Math.pow(10, decimals);
+    value = value + '%';
+    return value;
+});
+
 var app = new Vue({
-  el: '#app'
+    el: '#app'
 });
 
 /***/ }),
@@ -50167,6 +50182,18 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = {
     mounted: function mounted() {
@@ -50189,7 +50216,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         this.created = true;
 
         this.internalForm.questions.forEach(function (question) {
-            question.hidden = true;
+            question.hidden = false;
         });
     },
 
@@ -50197,6 +50224,116 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         toggleQuestion: function toggleQuestion(question) {
             question.hidden = !question.hidden;
             this.$forceUpdate();
+        },
+        markCorrect: function markCorrect(question, answer) {
+            var _this = this;
+
+            var self = this;
+            this.saving = true;
+
+            axios.post('/admin/markCorrect', {
+                questionID: question.id,
+                answerBody: answer.body
+            }).then(function (response) {
+                _this.saving = false;
+                _this.saveSuccessful = true;
+                _this.saveFailed = false;
+
+                _this.internalForm.questions.forEach(function (question, index, questions) {
+                    if (question.id == response.data.id) {
+                        questions[index] = response.data;
+                        self.$forceUpdate();
+                    }
+                });
+            }).catch(function (error) {
+                _this.saving = false;
+                _this.saveFailed = true;
+                _this.saveSuccessful = false;
+
+                console.log('Error');
+                console.log(error);
+            });
+        },
+        markWrong: function markWrong(question, answer) {
+            var _this2 = this;
+
+            var self = this;
+            this.saving = true;
+
+            axios.post('/admin/markWrong', {
+                questionID: question.id,
+                answerBody: answer.body
+            }).then(function (response) {
+                _this2.saving = false;
+                _this2.saveSuccessful = true;
+                _this2.saveFailed = false;
+
+                _this2.internalForm.questions.forEach(function (question, index, questions) {
+                    if (question.id == response.data.id) {
+                        questions[index] = response.data;
+                        self.$forceUpdate();
+                    }
+                });
+            }).catch(function (error) {
+                _this2.saving = false;
+                _this2.saveFailed = true;
+                _this2.saveSuccessful = false;
+
+                console.log('Error');
+                console.log(error);
+            });
+        },
+        markNotable: function markNotable(question, answer) {
+            var _this3 = this;
+
+            var self = this;
+            this.saving = true;
+
+            axios.post('/admin/markNotable', {
+                questionID: question.id,
+                answerBody: answer.body
+            }).then(function (response) {
+                _this3.saving = false;
+                _this3.saveSuccessful = true;
+                _this3.saveFailed = false;
+
+                _this3.internalForm.questions.forEach(function (question, index, questions) {
+                    if (question.id == response.data.id) {
+                        questions[index] = response.data;
+                        self.$forceUpdate();
+                    }
+                });
+            }).catch(function (error) {
+                _this3.saving = false;
+                _this3.saveFailed = true;
+                _this3.saveSuccessful = false;
+
+                console.log('Error');
+                console.log(error);
+            });
+        },
+        calcTotalSubmissions: function calcTotalSubmissions(question) {
+            var total = 0;
+
+            question.submitted_answers.forEach(function (question) {
+                total++;
+            });
+
+            return total;
+        },
+        calcCorrectSubmissions: function calcCorrectSubmissions(question) {
+            var total = 0;
+
+            question.submitted_answers.forEach(function (question) {
+                if (question.correct) {
+                    total++;
+                }
+            });
+
+            return total;
+        },
+        calcCorrectPercentage: function calcCorrectPercentage(question) {
+            return this.calcCorrectSubmissions(question) / this.calcTotalSubmissions(question);
         }
     }
 };
@@ -50238,8 +50375,53 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }, [_vm._m(0, true), _vm._v(" "), _c('tbody', _vm._l((question.submitted_answers), function(answer) {
       return _c('tr', {
         class: answer.correct ? 'table-success' : (answer.notable ? 'table-warning' : 'table-danger')
-      }, [_c('td', [_vm._v(_vm._s(answer.user.name))]), _vm._v(" "), _c('td', [_vm._v(_vm._s(answer.body))]), _vm._v(" "), _vm._m(1, true), _vm._v(" "), _vm._m(2, true), _vm._v(" "), _vm._m(3, true)])
-    }))])], 2)])
+      }, [_c('td', [_vm._v(_vm._s(answer.user.name))]), _vm._v(" "), _c('td', [_vm._v(_vm._s(answer.body))]), _vm._v(" "), _c('td', {
+        staticClass: "align-center"
+      }, [_c('i', {
+        staticClass: "fa fa-check clickable correct",
+        on: {
+          "click": function($event) {
+            _vm.markCorrect(question, answer)
+          }
+        }
+      })]), _vm._v(" "), _c('td', {
+        staticClass: "align-center"
+      }, [_c('i', {
+        staticClass: "fa fa-ban clickable wrong",
+        on: {
+          "click": function($event) {
+            _vm.markWrong(question, answer)
+          }
+        }
+      })]), _vm._v(" "), _c('td', {
+        staticClass: "align-center"
+      }, [_c('i', {
+        staticClass: "fa fa-star clickable notable",
+        on: {
+          "click": function($event) {
+            _vm.markNotable(question, answer)
+          }
+        }
+      })])])
+    })), _vm._v(" "), _c('tfoot', [_c('tr', [_c('th', {
+      staticClass: "align-right",
+      attrs: {
+        "colspan": "3"
+      }
+    }, [_vm._v("Total")]), _vm._v(" "), _c('th', {
+      staticClass: "align-right"
+    }, [_vm._v("Correct")]), _vm._v(" "), _c('th', {
+      staticClass: "align-right"
+    }, [_vm._v("Percentage")])]), _vm._v(" "), _c('tr', [_c('th', {
+      staticClass: "align-right",
+      attrs: {
+        "colspan": "3"
+      }
+    }, [_vm._v(_vm._s(_vm.calcTotalSubmissions(question)))]), _vm._v(" "), _c('th', {
+      staticClass: "align-right"
+    }, [_vm._v(_vm._s(_vm.calcCorrectSubmissions(question)))]), _vm._v(" "), _c('th', {
+      staticClass: "align-right"
+    }, [_vm._v(_vm._s(_vm._f("percentage")(_vm.calcCorrectPercentage(question))))])])])], 1)], 2)])
   }))
 },staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('thead', [_c('tr', [_c('th', [_vm._v("Username")]), _vm._v(" "), _c('th', [_vm._v("Answer")]), _vm._v(" "), _c('th', {
@@ -50249,24 +50431,6 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   }, [_vm._v("Mark Wrong")]), _vm._v(" "), _c('th', {
     staticClass: "align-center"
   }, [_vm._v("Mark Notable")])])])
-},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('td', {
-    staticClass: "align-center"
-  }, [_c('i', {
-    staticClass: "fa fa-check clickable correct"
-  })])
-},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('td', {
-    staticClass: "align-center"
-  }, [_c('i', {
-    staticClass: "fa fa-ban clickable wrong"
-  })])
-},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('td', {
-    staticClass: "align-center"
-  }, [_c('i', {
-    staticClass: "fa fa-star clickable notable"
-  })])
 }]}
 module.exports.render._withStripped = true
 if (false) {

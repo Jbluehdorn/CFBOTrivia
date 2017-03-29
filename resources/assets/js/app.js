@@ -19,6 +19,21 @@ Vue.component('editable-field', require('./components/editable-field.vue'));
 Vue.component('grading-form', require('./components/grading-form.vue'));
 Vue.component('modal', require('./components/modal.vue'));
 
+Vue.filter('percentage', function(value, decimals) {
+    if(!value) {
+        value = 0;
+    }
+
+    if(!decimals) {
+        decimals = 2;
+    }
+
+    value = value * 100;
+    value = Math.round(value * Math.pow(10, decimals)) / Math.pow(10, decimals);
+    value = value + '%';
+    return value;
+});
+
 const app = new Vue({
     el: '#app'
 });

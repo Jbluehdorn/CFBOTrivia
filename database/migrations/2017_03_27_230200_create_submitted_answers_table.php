@@ -20,6 +20,7 @@ class CreateSubmittedAnswersTable extends Migration
             $table->string('body')->default('');
             $table->boolean('correct')->default(false);
             $table->boolean('notable')->default(false);
+            $table->timestamps();
         });
     }
 

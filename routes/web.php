@@ -31,6 +31,10 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'CheckAdmin']], func
      */
     Route::get('/grading', 'GradingController@home');
     Route::get('/grading/{id}', 'GradingController@gradeForm');
+
+    Route::post('/markCorrect', 'GradingController@markCorrect');
+    Route::post('/markWrong', 'GradingController@markWrong');
+    Route::post('/markNotable', 'GradingController@markNotable');
 });
 
 /*
