@@ -34,6 +34,9 @@
                     {{--<li><a href="/admin">All</a></li>--}}
                     {{--<li><a href="/admin/newForm">New</a></li>--}}
                     @if(Auth::User())
+                        @if(Auth::User()->isAdmin)
+                            <li><a href="/admin">Admin</a></li>
+                        @endif
                     <li><a href="/logout">Logout <i class="fa fa-sign-out" title="Logout"></i></a></li>
                     @endif
                 </ul>

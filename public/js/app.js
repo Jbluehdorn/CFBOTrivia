@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "./";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 57);
+/******/ 	return __webpack_require__(__webpack_require__.s = 63);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -376,6 +376,59 @@ module.exports = {
 /* 1 */
 /***/ (function(module, exports) {
 
+module.exports = function normalizeComponent (
+  rawScriptExports,
+  compiledTemplate,
+  scopeId,
+  cssModules
+) {
+  var esModule
+  var scriptExports = rawScriptExports = rawScriptExports || {}
+
+  // ES6 modules interop
+  var type = typeof rawScriptExports.default
+  if (type === 'object' || type === 'function') {
+    esModule = rawScriptExports
+    scriptExports = rawScriptExports.default
+  }
+
+  // Vue.extend constructor export interop
+  var options = typeof scriptExports === 'function'
+    ? scriptExports.options
+    : scriptExports
+
+  // render functions
+  if (compiledTemplate) {
+    options.render = compiledTemplate.render
+    options.staticRenderFns = compiledTemplate.staticRenderFns
+  }
+
+  // scopedId
+  if (scopeId) {
+    options._scopeId = scopeId
+  }
+
+  // inject cssModules
+  if (cssModules) {
+    var computed = options.computed || (options.computed = {})
+    Object.keys(cssModules).forEach(function (key) {
+      var module = cssModules[key]
+      computed[key] = function () { return module }
+    })
+  }
+
+  return {
+    esModule: esModule,
+    exports: scriptExports,
+    options: options
+  }
+}
+
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports) {
+
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -559,59 +612,6 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 2 */
-/***/ (function(module, exports) {
-
-module.exports = function normalizeComponent (
-  rawScriptExports,
-  compiledTemplate,
-  scopeId,
-  cssModules
-) {
-  var esModule
-  var scriptExports = rawScriptExports = rawScriptExports || {}
-
-  // ES6 modules interop
-  var type = typeof rawScriptExports.default
-  if (type === 'object' || type === 'function') {
-    esModule = rawScriptExports
-    scriptExports = rawScriptExports.default
-  }
-
-  // Vue.extend constructor export interop
-  var options = typeof scriptExports === 'function'
-    ? scriptExports.options
-    : scriptExports
-
-  // render functions
-  if (compiledTemplate) {
-    options.render = compiledTemplate.render
-    options.staticRenderFns = compiledTemplate.staticRenderFns
-  }
-
-  // scopedId
-  if (scopeId) {
-    options._scopeId = scopeId
-  }
-
-  // inject cssModules
-  if (cssModules) {
-    var computed = options.computed || (options.computed = {})
-    Object.keys(cssModules).forEach(function (key) {
-      var module = cssModules[key]
-      computed[key] = function () { return module }
-    })
-  }
-
-  return {
-    esModule: esModule,
-    exports: scriptExports,
-    options: options
-  }
-}
-
-
-/***/ }),
 /* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -710,7 +710,7 @@ utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
 
 module.exports = defaults;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ }),
 /* 4 */
@@ -922,7 +922,7 @@ module.exports = function xhrAdapter(config) {
   });
 };
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ }),
 /* 6 */
@@ -1080,7 +1080,7 @@ if (typeof DEBUG !== 'undefined' && DEBUG) {
   ) }
 }
 
-var listToStyles = __webpack_require__(54)
+var listToStyles = __webpack_require__(60)
 
 /*
 type StyleObject = {
@@ -1306,7 +1306,7 @@ function applyToTag (styleElement, obj) {
  * building robust, powerful web applications using Vue and Laravel.
  */
 
-__webpack_require__(36);
+__webpack_require__(38);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -1314,12 +1314,13 @@ __webpack_require__(36);
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-Vue.component('example', __webpack_require__(42));
-Vue.component('vue-paginate', __webpack_require__(50));
-Vue.component('form-editor', __webpack_require__(44));
-Vue.component('editable-field', __webpack_require__(43));
-Vue.component('grading-form', __webpack_require__(70));
-Vue.component('modal', __webpack_require__(45));
+Vue.component('example', __webpack_require__(44));
+Vue.component('vue-paginate', __webpack_require__(56));
+Vue.component('form-editor', __webpack_require__(46));
+Vue.component('editable-field', __webpack_require__(45));
+Vue.component('grading-form', __webpack_require__(47));
+Vue.component('grading-table', __webpack_require__(48));
+Vue.component('modal', __webpack_require__(49));
 
 Vue.filter('percentage', function (value, decimals) {
     if (!value) {
@@ -2497,6 +2498,227 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+
+/* harmony default export */ __webpack_exports__["default"] = {
+    mounted: function mounted() {
+        console.log('grading-form mounted');
+    },
+
+    props: ['form'],
+    data: function data() {
+        return {
+            internalForm: {},
+            created: false
+        };
+    },
+    created: function created() {
+        this.internalForm = this.form;
+
+        this.internalForm.questions.forEach(function (question) {
+            question.hidden = false;
+        });
+
+        this.created = true;
+    },
+
+    methods: {
+        toggleQuestion: function toggleQuestion(question) {
+            question.hidden = !question.hidden;
+            this.$forceUpdate();
+        }
+    },
+    computed: {}
+};
+
+/***/ }),
+/* 36 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = {
+    data: function data() {
+        return {
+            internalQuestion: {},
+            searchTerm: '',
+            orderTerm: 'body',
+            orderAsc: true,
+            hidden: false,
+            saving: false,
+            correctHidden: false
+        };
+    },
+    created: function created() {
+        this.internalQuestion = this.question;
+
+        this.internalQuestion.submitted_answers.forEach(function (answer) {
+            answer.username = answer.user.name;
+        });
+    },
+
+    props: ['question'],
+    methods: {
+        markCorrect: function markCorrect(answer) {
+            var _this = this;
+
+            this.saving = true;
+
+            axios.post('/admin/markCorrect', {
+                questionID: this.internalQuestion.id,
+                answerBody: answer.body
+            }).then(function (response) {
+                _this.internalQuestion = response.data;
+                _this.saving = false;
+            }).catch(function (error) {
+                _this.saving = false;
+                console.log('Error');
+                console.log(error);
+            });
+        },
+        markWrong: function markWrong(answer) {
+            var _this2 = this;
+
+            this.saving = true;
+
+            axios.post('/admin/markWrong', {
+                questionID: this.internalQuestion.id,
+                answerBody: answer.body
+            }).then(function (response) {
+                _this2.internalQuestion = response.data;
+                _this2.saving = false;
+            }).catch(function (error) {
+                _this2.saving = false;
+                console.log('Error');
+                console.log(error);
+            });
+        },
+        markNotable: function markNotable(answer) {
+            var _this3 = this;
+
+            this.saving = true;
+
+            axios.post('/admin/markNotable', {
+                questionID: this.internalQuestion.id,
+                answerBody: answer.body
+            }).then(function (response) {
+                _this3.internalQuestion = response.data;
+                _this3.saving = false;
+            }).catch(function (error) {
+                _this3.saving = false;
+                console.log('Error');
+                console.log(error);
+            });
+        }
+    },
+    computed: {
+        filteredAnswers: function filteredAnswers() {
+            var _this4 = this;
+
+            var self = this;
+            var result = this.internalQuestion.submitted_answers;
+            return result.filter(function (answer) {
+                return answer.user.name.toLowerCase().includes(_this4.searchTerm.toLowerCase());
+            });
+        },
+        totalSubmissions: function totalSubmissions() {
+            var total = 0;
+
+            this.internalQuestion.submitted_answers.forEach(function (question) {
+                total++;
+            });
+
+            return total;
+        },
+        correctSubmissions: function correctSubmissions() {
+            var total = 0;
+
+            this.internalQuestion.submitted_answers.forEach(function (question) {
+                if (question.correct) {
+                    total++;
+                }
+            });
+
+            return total;
+        },
+        correctPercentage: function correctPercentage() {
+            return this.correctSubmissions / this.totalSubmissions;
+        }
+    }
+};
+
+/***/ }),
+/* 37 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -2576,11 +2798,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 };
 
 /***/ }),
-/* 36 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
-window._ = __webpack_require__(41);
+window._ = __webpack_require__(43);
 
 /**
  * We'll load jQuery and the Bootstrap jQuery plugin which provides support
@@ -2588,9 +2810,9 @@ window._ = __webpack_require__(41);
  * code may be modified to fit the specific needs of your application.
  */
 
-window.$ = window.jQuery = __webpack_require__(40);
+window.$ = window.jQuery = __webpack_require__(42);
 
-__webpack_require__(37);
+__webpack_require__(39);
 
 /**
  * Vue is a modern JavaScript library for building interactive web interfaces
@@ -2598,8 +2820,8 @@ __webpack_require__(37);
  * and simple, leaving you to focus on building your next great project.
  */
 
-window.Vue = __webpack_require__(55);
-__webpack_require__(51);
+window.Vue = __webpack_require__(61);
+__webpack_require__(57);
 
 /**
  * We'll load the axios HTTP library which allows us to easily issue requests
@@ -2628,7 +2850,7 @@ window.axios.defaults.headers.common = {
 // });
 
 /***/ }),
-/* 37 */
+/* 39 */
 /***/ (function(module, exports) {
 
 /*!
@@ -5011,7 +5233,7 @@ if (typeof jQuery === 'undefined') {
 
 
 /***/ }),
-/* 38 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(10)();
@@ -5025,7 +5247,7 @@ exports.push([module.i, "\n.modal-mask {\n    position: fixed;\n    z-index: 999
 
 
 /***/ }),
-/* 39 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(10)();
@@ -5039,7 +5261,7 @@ exports.push([module.i, "\n.editable-field .fa-pencil {\n    margin-left: 5px;\n
 
 
 /***/ }),
-/* 40 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -15266,7 +15488,7 @@ return jQuery;
 
 
 /***/ }),
-/* 41 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, module) {var __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -32355,17 +32577,17 @@ return jQuery;
   }
 }.call(this));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4), __webpack_require__(56)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4), __webpack_require__(62)(module)))
 
 /***/ }),
-/* 42 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Component = __webpack_require__(2)(
+var Component = __webpack_require__(1)(
   /* script */
   __webpack_require__(32),
   /* template */
-  __webpack_require__(49),
+  __webpack_require__(55),
   /* scopeId */
   null,
   /* cssModules */
@@ -32392,18 +32614,18 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 43 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
 /* styles */
-__webpack_require__(53)
+__webpack_require__(59)
 
-var Component = __webpack_require__(2)(
+var Component = __webpack_require__(1)(
   /* script */
   __webpack_require__(33),
   /* template */
-  __webpack_require__(48),
+  __webpack_require__(54),
   /* scopeId */
   null,
   /* cssModules */
@@ -32430,14 +32652,14 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 44 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Component = __webpack_require__(2)(
+var Component = __webpack_require__(1)(
   /* script */
   __webpack_require__(34),
   /* template */
-  __webpack_require__(46),
+  __webpack_require__(51),
   /* scopeId */
   null,
   /* cssModules */
@@ -32464,18 +32686,86 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 45 */
+/* 47 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Component = __webpack_require__(1)(
+  /* script */
+  __webpack_require__(35),
+  /* template */
+  __webpack_require__(50),
+  /* scopeId */
+  null,
+  /* cssModules */
+  null
+)
+Component.options.__file = "/Users/Jordan/sites/CFBOTrivia/resources/assets/js/components/grading/grading-form.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] grading-form.vue: functional components are not supported with templates, they should use render functions.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-183e4c82", Component.options)
+  } else {
+    hotAPI.reload("data-v-183e4c82", Component.options)
+  }
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 48 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Component = __webpack_require__(1)(
+  /* script */
+  __webpack_require__(36),
+  /* template */
+  __webpack_require__(53),
+  /* scopeId */
+  null,
+  /* cssModules */
+  null
+)
+Component.options.__file = "/Users/Jordan/sites/CFBOTrivia/resources/assets/js/components/grading/grading-table.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] grading-table.vue: functional components are not supported with templates, they should use render functions.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-af14713a", Component.options)
+  } else {
+    hotAPI.reload("data-v-af14713a", Component.options)
+  }
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
 /* styles */
-__webpack_require__(52)
+__webpack_require__(58)
 
-var Component = __webpack_require__(2)(
+var Component = __webpack_require__(1)(
   /* script */
-  __webpack_require__(35),
+  __webpack_require__(37),
   /* template */
-  __webpack_require__(47),
+  __webpack_require__(52),
   /* scopeId */
   null,
   /* cssModules */
@@ -32502,7 +32792,50 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 46 */
+/* 50 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', _vm._l((_vm.internalForm.questions), function(question) {
+    return _c('div', {
+      staticClass: "panel panel-default"
+    }, [_c('div', {
+      staticClass: "panel-heading"
+    }, [_c('h5', [_vm._v("\n                " + _vm._s(question.body) + "\n                "), _c('span', {
+      staticClass: "clickable pull-right",
+      on: {
+        "click": function($event) {
+          _vm.toggleQuestion(question)
+        }
+      }
+    }, [_c('i', {
+      staticClass: "fa",
+      class: question.hidden ? 'fa-plus' : 'fa-minus'
+    })])])]), _vm._v(" "), _c('div', {
+      directives: [{
+        name: "show",
+        rawName: "v-show",
+        value: (!question.hidden),
+        expression: "!question.hidden"
+      }],
+      staticClass: "panel-body"
+    }, [_c('grading-table', {
+      attrs: {
+        "question": question
+      }
+    })], 1)])
+  }))
+},staticRenderFns: []}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-hot-reload-api").rerender("data-v-183e4c82", module.exports)
+  }
+}
+
+/***/ }),
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -32647,7 +32980,7 @@ if (false) {
 }
 
 /***/ }),
-/* 47 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -32684,7 +33017,156 @@ if (false) {
 }
 
 /***/ }),
-/* 48 */
+/* 53 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', [_c('strong', [_vm._v("Accepted Answers:")]), _vm._v(" "), _vm._l((_vm.internalQuestion.answers), function(answer, key) {
+    return _c('span', {
+      staticClass: "answer"
+    }, [_vm._v(_vm._s(answer.body) + _vm._s(key != _vm.internalQuestion.answers.length - 1 ? ',' : '') + " ")])
+  }), _vm._v(" "), _c('table', {
+    staticClass: "table"
+  }, [_c('thead', [_c('tr', [_c('th', {
+    attrs: {
+      "colspan": "3"
+    }
+  }, [_c('input', {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: (_vm.searchTerm),
+      expression: "searchTerm"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      "type": "text",
+      "placeholder": "Search by Username..."
+    },
+    domProps: {
+      "value": _vm._s(_vm.searchTerm)
+    },
+    on: {
+      "input": function($event) {
+        if ($event.target.composing) { return; }
+        _vm.searchTerm = $event.target.value
+      }
+    }
+  })]), _vm._v(" "), _c('th', [_c('input', {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: (_vm.correctHidden),
+      expression: "correctHidden"
+    }],
+    attrs: {
+      "type": "checkbox"
+    },
+    domProps: {
+      "checked": Array.isArray(_vm.correctHidden) ? _vm._i(_vm.correctHidden, null) > -1 : (_vm.correctHidden)
+    },
+    on: {
+      "click": function($event) {
+        var $$a = _vm.correctHidden,
+          $$el = $event.target,
+          $$c = $$el.checked ? (true) : (false);
+        if (Array.isArray($$a)) {
+          var $$v = null,
+            $$i = _vm._i($$a, $$v);
+          if ($$c) {
+            $$i < 0 && (_vm.correctHidden = $$a.concat($$v))
+          } else {
+            $$i > -1 && (_vm.correctHidden = $$a.slice(0, $$i).concat($$a.slice($$i + 1)))
+          }
+        } else {
+          _vm.correctHidden = $$c
+        }
+      }
+    }
+  }), _vm._v(" Hide Correct Answers")]), _vm._v(" "), _c('th', [_c('span', {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: (_vm.saving),
+      expression: "saving"
+    }]
+  }, [_vm._v("Saving... "), _c('i', {
+    staticClass: "fa fa-spin fa-cog"
+  })])])]), _vm._v(" "), _vm._m(0)]), _vm._v(" "), _c('tbody', _vm._l((_vm.filteredAnswers), function(answer) {
+    return _c('tr', {
+      directives: [{
+        name: "show",
+        rawName: "v-show",
+        value: (!answer.correct || !_vm.correctHidden),
+        expression: "!answer.correct || !correctHidden"
+      }],
+      class: answer.correct ? 'table-success' : (answer.notable ? 'table-warning' : 'table-danger')
+    }, [_c('td', [_vm._v(_vm._s(answer.user.name))]), _vm._v(" "), _c('td', [_vm._v(_vm._s(answer.body))]), _vm._v(" "), _c('td', {
+      staticClass: "align-center"
+    }, [_c('i', {
+      staticClass: "fa fa-check clickable correct",
+      on: {
+        "click": function($event) {
+          _vm.markCorrect(answer)
+        }
+      }
+    })]), _vm._v(" "), _c('td', {
+      staticClass: "align-center"
+    }, [_c('i', {
+      staticClass: "fa fa-ban clickable wrong",
+      on: {
+        "click": function($event) {
+          _vm.markWrong(answer)
+        }
+      }
+    })]), _vm._v(" "), _c('td', {
+      staticClass: "align-center"
+    }, [_c('i', {
+      staticClass: "fa fa-star clickable notable",
+      on: {
+        "click": function($event) {
+          _vm.markNotable(answer)
+        }
+      }
+    })])])
+  })), _vm._v(" "), _c('tfoot', [_c('tr', [_c('th', {
+    staticClass: "align-right",
+    attrs: {
+      "colspan": "3"
+    }
+  }, [_vm._v("Total")]), _vm._v(" "), _c('th', {
+    staticClass: "align-right"
+  }, [_vm._v("Correct")]), _vm._v(" "), _c('th', {
+    staticClass: "align-right"
+  }, [_vm._v("Percentage")])]), _vm._v(" "), _c('tr', [_c('th', {
+    staticClass: "align-right",
+    attrs: {
+      "colspan": "3"
+    }
+  }, [_vm._v(_vm._s(_vm.totalSubmissions))]), _vm._v(" "), _c('th', {
+    staticClass: "align-right"
+  }, [_vm._v(_vm._s(_vm.correctSubmissions))]), _vm._v(" "), _c('th', {
+    staticClass: "align-right"
+  }, [_vm._v(_vm._s(_vm._f("percentage")(_vm.correctPercentage)))])])])], 1)], 2)
+},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('tr', [_c('th', [_vm._v("Username")]), _vm._v(" "), _c('th', [_vm._v("Answer")]), _vm._v(" "), _c('th', {
+    staticClass: "align-center"
+  }, [_vm._v("Mark Correct")]), _vm._v(" "), _c('th', {
+    staticClass: "align-center"
+  }, [_vm._v("Mark Wrong")]), _vm._v(" "), _c('th', {
+    staticClass: "align-center"
+  }, [_vm._v("Mark Notable")])])
+}]}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-hot-reload-api").rerender("data-v-af14713a", module.exports)
+  }
+}
+
+/***/ }),
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -32825,7 +33307,7 @@ if (false) {
 }
 
 /***/ }),
-/* 49 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -32854,7 +33336,7 @@ if (false) {
 }
 
 /***/ }),
-/* 50 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/**
@@ -39111,7 +39593,7 @@ if (false) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ }),
-/* 51 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -41395,16 +41877,16 @@ if (inBrowser && window.Vue) {
 
 module.exports = VueRouter;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ }),
-/* 52 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(38);
+var content = __webpack_require__(40);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
@@ -41424,13 +41906,13 @@ if(false) {
 }
 
 /***/ }),
-/* 53 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(39);
+var content = __webpack_require__(41);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
@@ -41450,7 +41932,7 @@ if(false) {
 }
 
 /***/ }),
-/* 54 */
+/* 60 */
 /***/ (function(module, exports) {
 
 /**
@@ -41483,7 +41965,7 @@ module.exports = function listToStyles (parentId, list) {
 
 
 /***/ }),
-/* 55 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -50056,10 +50538,10 @@ Vue$3.compile = compileToFunctions;
 
 module.exports = Vue$3;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(4)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2), __webpack_require__(4)))
 
 /***/ }),
-/* 56 */
+/* 62 */
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -50087,358 +50569,12 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 57 */
+/* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(12);
 module.exports = __webpack_require__(13);
 
-
-/***/ }),
-/* 58 */,
-/* 59 */,
-/* 60 */,
-/* 61 */,
-/* 62 */,
-/* 63 */,
-/* 64 */,
-/* 65 */,
-/* 66 */,
-/* 67 */,
-/* 68 */,
-/* 69 */,
-/* 70 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var Component = __webpack_require__(2)(
-  /* script */
-  __webpack_require__(71),
-  /* template */
-  __webpack_require__(72),
-  /* scopeId */
-  null,
-  /* cssModules */
-  null
-)
-Component.options.__file = "/Users/Jordan/sites/CFBOTrivia/resources/assets/js/components/grading-form.vue"
-if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
-if (Component.options.functional) {console.error("[vue-loader] grading-form.vue: functional components are not supported with templates, they should use render functions.")}
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-c5b01238", Component.options)
-  } else {
-    hotAPI.reload("data-v-c5b01238", Component.options)
-  }
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
-/* 71 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-/* harmony default export */ __webpack_exports__["default"] = {
-    mounted: function mounted() {
-        console.log('grading-form mounted');
-    },
-
-    props: ['form'],
-    data: function data() {
-        return {
-            internalForm: {},
-            saving: false,
-            saveFailed: false,
-            saveSuccessful: false,
-            created: false,
-            clicks: 0
-        };
-    },
-    created: function created() {
-        this.internalForm = this.form;
-        this.created = true;
-
-        this.internalForm.questions.forEach(function (question) {
-            question.hidden = false;
-        });
-    },
-
-    methods: {
-        toggleQuestion: function toggleQuestion(question) {
-            question.hidden = !question.hidden;
-            this.$forceUpdate();
-        },
-        markCorrect: function markCorrect(question, answer) {
-            var _this = this;
-
-            var self = this;
-            this.saving = true;
-
-            axios.post('/admin/markCorrect', {
-                questionID: question.id,
-                answerBody: answer.body
-            }).then(function (response) {
-                _this.saving = false;
-                _this.saveSuccessful = true;
-                _this.saveFailed = false;
-
-                _this.internalForm.questions.forEach(function (question, index, questions) {
-                    if (question.id == response.data.id) {
-                        questions[index] = response.data;
-                        self.$forceUpdate();
-                    }
-                });
-            }).catch(function (error) {
-                _this.saving = false;
-                _this.saveFailed = true;
-                _this.saveSuccessful = false;
-
-                console.log('Error');
-                console.log(error);
-            });
-        },
-        markWrong: function markWrong(question, answer) {
-            var _this2 = this;
-
-            var self = this;
-            this.saving = true;
-
-            axios.post('/admin/markWrong', {
-                questionID: question.id,
-                answerBody: answer.body
-            }).then(function (response) {
-                _this2.saving = false;
-                _this2.saveSuccessful = true;
-                _this2.saveFailed = false;
-
-                _this2.internalForm.questions.forEach(function (question, index, questions) {
-                    if (question.id == response.data.id) {
-                        questions[index] = response.data;
-                        self.$forceUpdate();
-                    }
-                });
-            }).catch(function (error) {
-                _this2.saving = false;
-                _this2.saveFailed = true;
-                _this2.saveSuccessful = false;
-
-                console.log('Error');
-                console.log(error);
-            });
-        },
-        markNotable: function markNotable(question, answer) {
-            var _this3 = this;
-
-            var self = this;
-            this.saving = true;
-
-            axios.post('/admin/markNotable', {
-                questionID: question.id,
-                answerBody: answer.body
-            }).then(function (response) {
-                _this3.saving = false;
-                _this3.saveSuccessful = true;
-                _this3.saveFailed = false;
-
-                _this3.internalForm.questions.forEach(function (question, index, questions) {
-                    if (question.id == response.data.id) {
-                        questions[index] = response.data;
-                        self.$forceUpdate();
-                    }
-                });
-            }).catch(function (error) {
-                _this3.saving = false;
-                _this3.saveFailed = true;
-                _this3.saveSuccessful = false;
-
-                console.log('Error');
-                console.log(error);
-            });
-        },
-        calcTotalSubmissions: function calcTotalSubmissions(question) {
-            var total = 0;
-
-            question.submitted_answers.forEach(function (question) {
-                total++;
-            });
-
-            return total;
-        },
-        calcCorrectSubmissions: function calcCorrectSubmissions(question) {
-            var total = 0;
-
-            question.submitted_answers.forEach(function (question) {
-                if (question.correct) {
-                    total++;
-                }
-            });
-
-            return total;
-        },
-        calcCorrectPercentage: function calcCorrectPercentage(question) {
-            return this.calcCorrectSubmissions(question) / this.calcTotalSubmissions(question);
-        }
-    }
-};
-
-/***/ }),
-/* 72 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', _vm._l((_vm.internalForm.questions), function(question) {
-    return _c('div', {
-      staticClass: "panel panel-default"
-    }, [_c('div', {
-      staticClass: "panel-heading"
-    }, [_c('h5', [_vm._v(_vm._s(question.body) + " "), _c('span', {
-      staticClass: "clickable pull-right",
-      on: {
-        "click": function($event) {
-          _vm.toggleQuestion(question)
-        }
-      }
-    }, [_c('i', {
-      staticClass: "fa",
-      class: question.hidden ? 'fa-plus' : 'fa-minus'
-    })])])]), _vm._v(" "), _c('div', {
-      directives: [{
-        name: "show",
-        rawName: "v-show",
-        value: (!question.hidden),
-        expression: "!question.hidden"
-      }],
-      staticClass: "panel-body"
-    }, [_c('strong', [_vm._v("Accepted Answers:")]), _vm._v(" "), _vm._l((question.answers), function(answer, key) {
-      return _c('span', {
-        staticClass: "answer"
-      }, [_vm._v(_vm._s(answer.body) + _vm._s(key != question.answers.length - 1 ? ',' : '') + " ")])
-    }), _vm._v(" "), _c('table', {
-      staticClass: "table"
-    }, [_vm._m(0, true), _vm._v(" "), _c('tbody', _vm._l((question.submitted_answers), function(answer) {
-      return _c('tr', {
-        class: answer.correct ? 'table-success' : (answer.notable ? 'table-warning' : 'table-danger')
-      }, [_c('td', [_vm._v(_vm._s(answer.user.name))]), _vm._v(" "), _c('td', [_vm._v(_vm._s(answer.body))]), _vm._v(" "), _c('td', {
-        staticClass: "align-center"
-      }, [_c('i', {
-        staticClass: "fa fa-check clickable correct",
-        on: {
-          "click": function($event) {
-            _vm.markCorrect(question, answer)
-          }
-        }
-      })]), _vm._v(" "), _c('td', {
-        staticClass: "align-center"
-      }, [_c('i', {
-        staticClass: "fa fa-ban clickable wrong",
-        on: {
-          "click": function($event) {
-            _vm.markWrong(question, answer)
-          }
-        }
-      })]), _vm._v(" "), _c('td', {
-        staticClass: "align-center"
-      }, [_c('i', {
-        staticClass: "fa fa-star clickable notable",
-        on: {
-          "click": function($event) {
-            _vm.markNotable(question, answer)
-          }
-        }
-      })])])
-    })), _vm._v(" "), _c('tfoot', [_c('tr', [_c('th', {
-      staticClass: "align-right",
-      attrs: {
-        "colspan": "3"
-      }
-    }, [_vm._v("Total")]), _vm._v(" "), _c('th', {
-      staticClass: "align-right"
-    }, [_vm._v("Correct")]), _vm._v(" "), _c('th', {
-      staticClass: "align-right"
-    }, [_vm._v("Percentage")])]), _vm._v(" "), _c('tr', [_c('th', {
-      staticClass: "align-right",
-      attrs: {
-        "colspan": "3"
-      }
-    }, [_vm._v(_vm._s(_vm.calcTotalSubmissions(question)))]), _vm._v(" "), _c('th', {
-      staticClass: "align-right"
-    }, [_vm._v(_vm._s(_vm.calcCorrectSubmissions(question)))]), _vm._v(" "), _c('th', {
-      staticClass: "align-right"
-    }, [_vm._v(_vm._s(_vm._f("percentage")(_vm.calcCorrectPercentage(question))))])])])], 1)], 2)])
-  }))
-},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('thead', [_c('tr', [_c('th', [_vm._v("Username")]), _vm._v(" "), _c('th', [_vm._v("Answer")]), _vm._v(" "), _c('th', {
-    staticClass: "align-center"
-  }, [_vm._v("Mark Correct")]), _vm._v(" "), _c('th', {
-    staticClass: "align-center"
-  }, [_vm._v("Mark Wrong")]), _vm._v(" "), _c('th', {
-    staticClass: "align-center"
-  }, [_vm._v("Mark Notable")])])])
-}]}
-module.exports.render._withStripped = true
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-c5b01238", module.exports)
-  }
-}
 
 /***/ })
 /******/ ]);

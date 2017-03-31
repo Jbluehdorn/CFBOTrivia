@@ -27,7 +27,7 @@
     <nav class="navbar navbar-default navbar-static-top">
         <div class="container">
             <div class="navbar-header">
-                <a href="/admin" class="navbar-brand"><img src="{{config('app.logo_small', '')}}" class="image-thumbnail" alt="CFBOTrivia"></a>
+                <a href="/" class="navbar-brand"><img src="{{config('app.logo_small', '')}}" class="image-thumbnail" alt="CFBOTrivia"></a>
             </div>
             <div class="collapse navbar-collapse">
                 <ul class="nav navbar-nav">
