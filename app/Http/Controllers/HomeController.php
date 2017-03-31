@@ -22,7 +22,7 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $form = Form::where('isActive', true)->first();
+        $form = Form::active();
         $questionTime = config('trivia.time_per_question');
 
         return view('home')->with(compact('form', 'questionTime'));

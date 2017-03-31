@@ -37,6 +37,10 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'CheckAdmin']], func
     Route::post('/markNotable', 'GradingController@markNotable');
 });
 
+Route::group(['prefix' => 'trivia', 'middleware' => ['auth']], function() {
+    Route::get('/current', 'TriviaController@getCurrentForm');
+});
+
 /*
  * Errors
  */

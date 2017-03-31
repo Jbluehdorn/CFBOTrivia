@@ -12,13 +12,26 @@ require('./bootstrap');
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-Vue.component('example', require('./components/Example.vue'));
 Vue.component('vue-paginate', require('vue-paginate'));
 Vue.component('form-editor', require('./components/form-editor.vue'));
-Vue.component('editable-field', require('./components/editable-field.vue'));
+
+/*
+    Grading components
+ */
 Vue.component('grading-form', require('./components/grading/grading-form.vue'));
 Vue.component('grading-table', require('./components/grading/grading-table.vue'));
+
+/*
+    Trivia components
+ */
+Vue.component('trivia-form', require('./components/trivia_form/form.vue'));
+
+/*
+    General Components
+ */
 Vue.component('modal', require('./components/modal.vue'));
+Vue.component('editable-field', require('./components/editable-field.vue'));
+
 
 Vue.filter('percentage', function(value, decimals) {
     if(!value) {

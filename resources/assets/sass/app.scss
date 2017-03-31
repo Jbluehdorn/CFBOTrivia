@@ -13,6 +13,7 @@
 //Components
 @import "./components/form-editor.scss";
 @import "./components/gradingForm.scss";
+@import "./components/trivia_form/form.scss";
 
 .clickable {
   cursor: pointer;
@@ -28,4 +29,14 @@
 
 .align-left {
   text-align: left;
+}
+
+.loading-large {
+  font-size: 5em;
+  margin: .5em;
+}
+
+.loading-medium {
+  font-size: 3em;
+  margin: .3em;
 }

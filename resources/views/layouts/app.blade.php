@@ -31,8 +31,7 @@
             </div>
             <div class="collapse navbar-collapse">
                 <ul class="nav navbar-nav">
-                    {{--<li><a href="/admin">All</a></li>--}}
-                    {{--<li><a href="/admin/newForm">New</a></li>--}}
+                    <li><a href="/">This Week</a></li>
                     @if(Auth::User())
                         @if(Auth::User()->isAdmin)
                             <li><a href="/admin">Admin</a></li>

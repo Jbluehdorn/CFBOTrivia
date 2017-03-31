@@ -17,4 +17,8 @@ class Form extends Model
     public function questions() {
         return $this->hasMany('App\Question');
     }
+
+    public static function active() {
+        return static::where('isActive', true)->first();
+    }
 }
