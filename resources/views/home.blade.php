@@ -14,9 +14,9 @@
                     <strong>Rules:</strong>
                     <br>
                     <ol>
-                        <li>You will have <strong>{{$questionTime}}</strong> seconds to answer each question</li>
-                        <li>After you answer a question you will <strong class="text-danger">not</strong> be able to go back to it so be sure before you hit submit</li>
-                        <li>Gag answers will not be accepted. If the correct answer is "Harvard" we will not accept "Havahd"</li>
+                        <li>You will have <strong>{{$questionTime}}</strong> seconds to answer each question. If the time runs out, your answer will not be submitted.</li>
+                        <li>After you answer a question, you will <strong class="text-danger">not</strong> be able to change it, so be sure before you move on to the next question.</li>
+                        <li>Gag answers will not be accepted. If the correct answer is "Harvard" we will not accept "Havahd".</li>
                         <li>Do not include extraneous information, your answer in a sentence form, your opinion about the question or your answer, etc.</li>
                     </ol>
                     <strong>This Week:</strong>

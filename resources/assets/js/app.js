@@ -48,6 +48,17 @@ Vue.filter('percentage', function(value, decimals) {
     return value;
 });
 
+Vue.filter('time', function(value) {
+   var mins = Math.floor(value / 60);
+   var secs = Math.floor(value % 60);
+
+   if(Math.floor(secs / 10) == 0) {
+       secs = "0" + secs;
+   }
+
+   return mins + ":" + secs;
+});
+
 const app = new Vue({
     el: '#app'
 });

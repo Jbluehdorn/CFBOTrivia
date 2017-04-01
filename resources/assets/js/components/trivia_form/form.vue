@@ -8,7 +8,11 @@
 
         <div class="panel panel-default" v-else>
             <div class="panel-heading">
-                <h3>{{internalForm.title}}</h3>
+                <h3>
+                    {{internalForm.title}}
+                    <span v-if="!timeUp" class="pull-right"><i class="fa fa-clock-o"></i> {{timeRemaining | time}}</span>
+                    <span v-else class="pull-right text-danger"><i class="fa fa-times"></i> Times up! {{timeRemaining | time}}</span>
+                </h3>
             </div>
             <div class="panel-body">
                 <div v-if="!started" class="align-center">
@@ -20,10 +24,10 @@
                     </div>
                     <div v-else>
                         <h4>{{question.body}}</h4>
-                        <input type="text" class="form-control" placeholder="Answer...">
+                        <input type="text" class="form-control" placeholder="Answer..." v-model="answer" :disabled="timeUp" v-on:keyup.enter="finishQuestion()">
                         <div class="form-buttons align-right">
-                            <button class="btn btn-primary" v-on:click="getNextQuestion()" v-if="!lastQuestion">Next >></button>
-                            <button class="btn btn-success" v-else>Finish</button>
+                            <button class="btn btn-primary" v-on:click="finishQuestion()" v-if="!lastQuestion">Next >></button>
+                            <button class="btn btn-success" v-on:click="finishQuestion()" v-else>Finish</button>
                         </div>
                     </div>
                 </div>
@@ -43,20 +47,54 @@
                 question: {},
                 started: false,
                 lastQuestion: false,
-                answer: ''
+                answer: '',
+                timeRemaining: 0,
+                timeUp: false,
+                timer: null,
+                //prevents multiple submissions
+                answerSubmitted: false
             }
         },
-        props: ['form'],
+        props: ['form', 'time'],
         created() {
             this.internalForm = this.form;
+            this.timeRemaining = this.time;
 
             this.nextPageUrl = '/api/getFormQuestions/' + this.internalForm.id;
 
             this.loading = false;
         },
         methods: {
+            finishQuestion() {
+                this.loadingQuestion = true;
+                if(!this.timeUp) {
+                    this.submitAnswer();
+                }
+
+                if(this.lastQuestion) {
+                    window.location.href = '/';
+                } else {
+                    this.getNextQuestion();
+                }
+            },
+            submitAnswer() {
+                if(this.answer.length && !this.answerSubmitted) {
+                    this.answerSubmitted = true;
+                    axios.post('/trivia/submitAnswer', {
+                        answerBody: this.answer,
+                        questionID: this.question.id
+                    }).then(response => {
+                        console.log(response);
+                        this.answerSubmitted = false;
+                    }).catch(error => {
+                        console.log(error);
+                        this.answerSubmitted = false;
+                    });
+                }
+            },
             getNextQuestion() {
                 this.loadingQuestion = true;
+                this.stopTimer();
 
                 axios.get(this.nextPageUrl).then(response => {
                     this.nextPageUrl = response.data.next_page_url;
@@ -67,14 +105,38 @@
                     this.question = response.data.data[0];
 
                     this.loadingQuestion = false;
+                    this.timeRemaining = this.time;
+                    this.timeUp = false;
+                    this.answer = '';
+                    this.startTimer();
                 }).catch(error => {
                     console.log(error);
                     this.loadingQuestion = false;
+                    this.timeUp = false;
                 });
             },
             start() {
                 this.getNextQuestion();
                 this.started = true;
+            },
+            updateTimer() {
+                this.timeRemaining--;
+
+                if(this.timeRemaining <= 0) {
+                    this.stopTimer();
+                    this.timeUp = true;
+                }
+            },
+            stopTimer() {
+                clearInterval(this.timer);
+            },
+            startTimer() {
+                var self = this;
+                if(!this.timeUp) {
+                    this.timer = setInterval(function() {
+                        self.updateTimer();
+                    }, 1000);
+                }
             }
         }
     }

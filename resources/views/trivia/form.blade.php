@@ -6,7 +6,7 @@
     <div class="container">
         <div class="row">
             @if($form)
-            <trivia-form :form="{{$form}}"></trivia-form>
+            <trivia-form :form="{{$form}}" :time="{{$questionTime}}"></trivia-form>
             @else
                 <h1>ERROR: Something went wrong. Please try again later.</h1>
             @endif

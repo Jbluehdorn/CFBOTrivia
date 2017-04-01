@@ -1315,24 +1315,24 @@ __webpack_require__(38);
  */
 
 Vue.component('vue-paginate', __webpack_require__(56));
-Vue.component('form-editor', __webpack_require__(46));
+Vue.component('form-editor', __webpack_require__(45));
 
 /*
     Grading components
  */
-Vue.component('grading-form', __webpack_require__(47));
-Vue.component('grading-table', __webpack_require__(48));
+Vue.component('grading-form', __webpack_require__(46));
+Vue.component('grading-table', __webpack_require__(47));
 
 /*
     Trivia components
  */
-Vue.component('trivia-form', __webpack_require__(80));
+Vue.component('trivia-form', __webpack_require__(49));
 
 /*
     General Components
  */
-Vue.component('modal', __webpack_require__(49));
-Vue.component('editable-field', __webpack_require__(45));
+Vue.component('modal', __webpack_require__(48));
+Vue.component('editable-field', __webpack_require__(44));
 
 Vue.filter('percentage', function (value, decimals) {
     if (!value) {
@@ -1347,6 +1347,17 @@ Vue.filter('percentage', function (value, decimals) {
     value = Math.round(value * Math.pow(10, decimals)) / Math.pow(10, decimals);
     value = value + '%';
     return value;
+});
+
+Vue.filter('time', function (value) {
+    var mins = Math.floor(value / 60);
+    var secs = Math.floor(value % 60);
+
+    if (Math.floor(secs / 10) == 0) {
+        secs = "0" + secs;
+    }
+
+    return mins + ":" + secs;
 });
 
 var app = new Vue({
@@ -2201,8 +2212,7 @@ module.exports = function spread(callback) {
 
 
 /***/ }),
-/* 32 */,
-/* 33 */
+/* 32 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2316,7 +2326,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 };
 
 /***/ }),
-/* 34 */
+/* 33 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2459,7 +2469,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 };
 
 /***/ }),
-/* 35 */
+/* 34 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2515,7 +2525,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 };
 
 /***/ }),
-/* 36 */
+/* 35 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2680,7 +2690,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 };
 
 /***/ }),
-/* 37 */
+/* 36 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2777,6 +2787,161 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     methods: {
         hide: function hide() {
             this.show = false;
+        }
+    }
+};
+
+/***/ }),
+/* 37 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = {
+    data: function data() {
+        return {
+            internalForm: {},
+            nextPageUrl: '',
+            loading: true,
+            loadingQuestion: false,
+            question: {},
+            started: false,
+            lastQuestion: false,
+            answer: '',
+            timeRemaining: 0,
+            timeUp: false,
+            timer: null,
+            //prevents multiple submissions
+            answerSubmitted: false
+        };
+    },
+
+    props: ['form', 'time'],
+    created: function created() {
+        this.internalForm = this.form;
+        this.timeRemaining = this.time;
+
+        this.nextPageUrl = '/api/getFormQuestions/' + this.internalForm.id;
+
+        this.loading = false;
+    },
+
+    methods: {
+        finishQuestion: function finishQuestion() {
+            this.loadingQuestion = true;
+            if (!this.timeUp) {
+                this.submitAnswer();
+            }
+
+            if (this.lastQuestion) {
+                window.location.href = '/';
+            } else {
+                this.getNextQuestion();
+            }
+        },
+        submitAnswer: function submitAnswer() {
+            var _this = this;
+
+            if (this.answer.length && !this.answerSubmitted) {
+                this.answerSubmitted = true;
+                axios.post('/trivia/submitAnswer', {
+                    answerBody: this.answer,
+                    questionID: this.question.id
+                }).then(function (response) {
+                    console.log(response);
+                    _this.answerSubmitted = false;
+                }).catch(function (error) {
+                    console.log(error);
+                    _this.answerSubmitted = false;
+                });
+            }
+        },
+        getNextQuestion: function getNextQuestion() {
+            var _this2 = this;
+
+            this.loadingQuestion = true;
+            this.stopTimer();
+
+            axios.get(this.nextPageUrl).then(function (response) {
+                _this2.nextPageUrl = response.data.next_page_url;
+                if (_this2.nextPageUrl == null) {
+                    _this2.lastQuestion = true;
+                }
+
+                _this2.question = response.data.data[0];
+
+                _this2.loadingQuestion = false;
+                _this2.timeRemaining = _this2.time;
+                _this2.timeUp = false;
+                _this2.answer = '';
+                _this2.startTimer();
+            }).catch(function (error) {
+                console.log(error);
+                _this2.loadingQuestion = false;
+                _this2.timeUp = false;
+            });
+        },
+        start: function start() {
+            this.getNextQuestion();
+            this.started = true;
+        },
+        updateTimer: function updateTimer() {
+            this.timeRemaining--;
+
+            if (this.timeRemaining <= 0) {
+                this.stopTimer();
+                this.timeUp = true;
+            }
+        },
+        stopTimer: function stopTimer() {
+            clearInterval(this.timer);
+        },
+        startTimer: function startTimer() {
+            var self = this;
+            if (!this.timeUp) {
+                this.timer = setInterval(function () {
+                    self.updateTimer();
+                }, 1000);
+            }
         }
     }
 };
@@ -32564,8 +32729,7 @@ return jQuery;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4), __webpack_require__(62)(module)))
 
 /***/ }),
-/* 44 */,
-/* 45 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -32574,9 +32738,9 @@ __webpack_require__(59)
 
 var Component = __webpack_require__(1)(
   /* script */
-  __webpack_require__(33),
+  __webpack_require__(32),
   /* template */
-  __webpack_require__(54),
+  __webpack_require__(55),
   /* scopeId */
   null,
   /* cssModules */
@@ -32603,12 +32767,12 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 46 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Component = __webpack_require__(1)(
   /* script */
-  __webpack_require__(34),
+  __webpack_require__(33),
   /* template */
   __webpack_require__(51),
   /* scopeId */
@@ -32637,12 +32801,12 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 47 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Component = __webpack_require__(1)(
   /* script */
-  __webpack_require__(35),
+  __webpack_require__(34),
   /* template */
   __webpack_require__(50),
   /* scopeId */
@@ -32671,14 +32835,14 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 48 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Component = __webpack_require__(1)(
   /* script */
-  __webpack_require__(36),
+  __webpack_require__(35),
   /* template */
-  __webpack_require__(53),
+  __webpack_require__(54),
   /* scopeId */
   null,
   /* cssModules */
@@ -32705,7 +32869,7 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 49 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -32714,9 +32878,9 @@ __webpack_require__(58)
 
 var Component = __webpack_require__(1)(
   /* script */
-  __webpack_require__(37),
+  __webpack_require__(36),
   /* template */
-  __webpack_require__(52),
+  __webpack_require__(53),
   /* scopeId */
   null,
   /* cssModules */
@@ -32736,6 +32900,40 @@ if (false) {(function () {
     hotAPI.createRecord("data-v-4a8d9af6", Component.options)
   } else {
     hotAPI.reload("data-v-4a8d9af6", Component.options)
+  }
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 49 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Component = __webpack_require__(1)(
+  /* script */
+  __webpack_require__(37),
+  /* template */
+  __webpack_require__(52),
+  /* scopeId */
+  null,
+  /* cssModules */
+  null
+)
+Component.options.__file = "/Users/Jordan/sites/CFBOTrivia/resources/assets/js/components/trivia_form/form.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] form.vue: functional components are not supported with templates, they should use render functions.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-1e33c68c", Component.options)
+  } else {
+    hotAPI.reload("data-v-1e33c68c", Component.options)
   }
 })()}
 
@@ -32935,6 +33133,100 @@ if (false) {
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: "col-xs-8 col-xs-offset-2 trivia-form"
+  }, [(_vm.loading) ? _c('div', {
+    staticClass: "panel panel-default"
+  }, [_vm._m(0)]) : _c('div', {
+    staticClass: "panel panel-default"
+  }, [_c('div', {
+    staticClass: "panel-heading"
+  }, [_c('h3', [_vm._v("\n                " + _vm._s(_vm.internalForm.title) + "\n                "), (!_vm.timeUp) ? _c('span', {
+    staticClass: "pull-right"
+  }, [_c('i', {
+    staticClass: "fa fa-clock-o"
+  }), _vm._v(" " + _vm._s(_vm._f("time")(_vm.timeRemaining)))]) : _c('span', {
+    staticClass: "pull-right text-danger"
+  }, [_c('i', {
+    staticClass: "fa fa-times"
+  }), _vm._v(" Times up! " + _vm._s(_vm._f("time")(_vm.timeRemaining)))])])]), _vm._v(" "), _c('div', {
+    staticClass: "panel-body"
+  }, [(!_vm.started) ? _c('div', {
+    staticClass: "align-center"
+  }, [_c('button', {
+    staticClass: "btn btn-success",
+    on: {
+      "click": function($event) {
+        _vm.start()
+      }
+    }
+  }, [_vm._v("Start!")])]) : _c('div', [(_vm.loadingQuestion) ? _c('div', {
+    staticClass: "align-center"
+  }, [_c('i', {
+    staticClass: "fa fa-cog fa-spin loading-medium"
+  })]) : _c('div', [_c('h4', [_vm._v(_vm._s(_vm.question.body))]), _vm._v(" "), _c('input', {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: (_vm.answer),
+      expression: "answer"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      "type": "text",
+      "placeholder": "Answer...",
+      "disabled": _vm.timeUp
+    },
+    domProps: {
+      "value": _vm._s(_vm.answer)
+    },
+    on: {
+      "keyup": function($event) {
+        if (_vm._k($event.keyCode, "enter", 13)) { return; }
+        _vm.finishQuestion()
+      },
+      "input": function($event) {
+        if ($event.target.composing) { return; }
+        _vm.answer = $event.target.value
+      }
+    }
+  }), _vm._v(" "), _c('div', {
+    staticClass: "form-buttons align-right"
+  }, [(!_vm.lastQuestion) ? _c('button', {
+    staticClass: "btn btn-primary",
+    on: {
+      "click": function($event) {
+        _vm.finishQuestion()
+      }
+    }
+  }, [_vm._v("Next >>")]) : _c('button', {
+    staticClass: "btn btn-success",
+    on: {
+      "click": function($event) {
+        _vm.finishQuestion()
+      }
+    }
+  }, [_vm._v("Finish")])])])])])])])
+},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: "panel-heading align-center"
+  }, [_c('i', {
+    staticClass: "fa fa-cog fa-spin loading-large"
+  })])
+}]}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-hot-reload-api").rerender("data-v-1e33c68c", module.exports)
+  }
+}
+
+/***/ }),
+/* 53 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('transition', {
     attrs: {
       "name": "modal"
@@ -32968,7 +33260,7 @@ if (false) {
 }
 
 /***/ }),
-/* 53 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -33117,7 +33409,7 @@ if (false) {
 }
 
 /***/ }),
-/* 54 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -33258,7 +33550,6 @@ if (false) {
 }
 
 /***/ }),
-/* 55 */,
 /* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -50498,207 +50789,6 @@ module.exports = function(module) {
 __webpack_require__(12);
 module.exports = __webpack_require__(13);
 
-
-/***/ }),
-/* 64 */,
-/* 65 */,
-/* 66 */,
-/* 67 */,
-/* 68 */,
-/* 69 */,
-/* 70 */,
-/* 71 */,
-/* 72 */,
-/* 73 */,
-/* 74 */,
-/* 75 */,
-/* 76 */,
-/* 77 */,
-/* 78 */,
-/* 79 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-/* harmony default export */ __webpack_exports__["default"] = {
-    data: function data() {
-        return {
-            internalForm: {},
-            nextPageUrl: '',
-            loading: true,
-            loadingQuestion: false,
-            question: {},
-            started: false,
-            lastQuestion: false,
-            answer: ''
-        };
-    },
-
-    props: ['form'],
-    created: function created() {
-        this.internalForm = this.form;
-
-        this.nextPageUrl = '/api/getFormQuestions/' + this.internalForm.id;
-
-        this.loading = false;
-    },
-
-    methods: {
-        getNextQuestion: function getNextQuestion() {
-            var _this = this;
-
-            this.loadingQuestion = true;
-
-            axios.get(this.nextPageUrl).then(function (response) {
-                _this.nextPageUrl = response.data.next_page_url;
-                if (_this.nextPageUrl == null) {
-                    _this.lastQuestion = true;
-                }
-
-                _this.question = response.data.data[0];
-
-                _this.loadingQuestion = false;
-            }).catch(function (error) {
-                console.log(error);
-                _this.loadingQuestion = false;
-            });
-        },
-        start: function start() {
-            this.getNextQuestion();
-            this.started = true;
-        }
-    }
-};
-
-/***/ }),
-/* 80 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var Component = __webpack_require__(1)(
-  /* script */
-  __webpack_require__(79),
-  /* template */
-  __webpack_require__(81),
-  /* scopeId */
-  null,
-  /* cssModules */
-  null
-)
-Component.options.__file = "/Users/Jordan/sites/CFBOTrivia/resources/assets/js/components/trivia_form/form.vue"
-if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
-if (Component.options.functional) {console.error("[vue-loader] form.vue: functional components are not supported with templates, they should use render functions.")}
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-1e33c68c", Component.options)
-  } else {
-    hotAPI.reload("data-v-1e33c68c", Component.options)
-  }
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
-/* 81 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticClass: "col-xs-8 col-xs-offset-2 trivia-form"
-  }, [(_vm.loading) ? _c('div', {
-    staticClass: "panel panel-default"
-  }, [_vm._m(0)]) : _c('div', {
-    staticClass: "panel panel-default"
-  }, [_c('div', {
-    staticClass: "panel-heading"
-  }, [_c('h3', [_vm._v(_vm._s(_vm.internalForm.title))])]), _vm._v(" "), _c('div', {
-    staticClass: "panel-body"
-  }, [(!_vm.started) ? _c('div', {
-    staticClass: "align-center"
-  }, [_c('button', {
-    staticClass: "btn btn-success",
-    on: {
-      "click": function($event) {
-        _vm.start()
-      }
-    }
-  }, [_vm._v("Start!")])]) : _c('div', [(_vm.loadingQuestion) ? _c('div', {
-    staticClass: "align-center"
-  }, [_c('i', {
-    staticClass: "fa fa-cog fa-spin loading-medium"
-  })]) : _c('div', [_c('h4', [_vm._v(_vm._s(_vm.question.body))]), _vm._v(" "), _c('input', {
-    staticClass: "form-control",
-    attrs: {
-      "type": "text",
-      "placeholder": "Answer..."
-    }
-  }), _vm._v(" "), _c('div', {
-    staticClass: "form-buttons align-right"
-  }, [(!_vm.lastQuestion) ? _c('button', {
-    staticClass: "btn btn-primary",
-    on: {
-      "click": function($event) {
-        _vm.getNextQuestion()
-      }
-    }
-  }, [_vm._v("Next >>")]) : _c('button', {
-    staticClass: "btn btn-success"
-  }, [_vm._v("Finish")])])])])])])])
-},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticClass: "panel-heading align-center"
-  }, [_c('i', {
-    staticClass: "fa fa-cog fa-spin loading-large"
-  })])
-}]}
-module.exports.render._withStripped = true
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-1e33c68c", module.exports)
-  }
-}
 
 /***/ })
 /******/ ]);

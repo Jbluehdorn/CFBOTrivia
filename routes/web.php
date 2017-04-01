@@ -17,6 +17,7 @@ Route::get('/newAccount', function() {
    return view('auth/register');
 });
 
+
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'CheckAdmin']], function() {
     Route::get('/', 'AdminController@index');
     Route::get('/newForm', 'AdminController@newForm');
@@ -39,6 +40,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'CheckAdmin']], func
 
 Route::group(['prefix' => 'trivia', 'middleware' => ['auth']], function() {
     Route::get('/current', 'TriviaController@getCurrentForm');
+    Route::post('/submitAnswer', 'TriviaController@submitAnswer');
 });
 
 /*
