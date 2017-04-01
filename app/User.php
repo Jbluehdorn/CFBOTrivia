@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Form;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -26,4 +27,19 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    public function getAllFormSubmissions($formID) {
+        $form = Form::find($formID);
+        $answers = [];
+
+        $questions = $form->questions;
+
+        foreach($questions as $question) {
+            $answer = $question->submittedAnswers->where('user_id', $this->id)->first();
+
+            array_push($answers, $answer);
+        }
+
+        return $answers;
+    }
 }

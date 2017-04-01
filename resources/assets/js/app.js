@@ -25,6 +25,7 @@ Vue.component('grading-table', require('./components/grading/grading-table.vue')
     Trivia components
  */
 Vue.component('trivia-form', require('./components/trivia_form/form.vue'));
+Vue.component('submissions-table', require('./components/trivia_form/submissions.vue'));
 
 /*
     General Components

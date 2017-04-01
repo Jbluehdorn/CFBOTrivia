@@ -19,6 +19,32 @@
   cursor: pointer;
 }
 
+.table {
+  .table-success {
+    background-color: #dff0d8;
+  }
+
+  .table-danger {
+    background-color: #f2dede;
+  }
+
+  .table-warning {
+    background-color: #fcf8e3;
+  }
+
+  .correct:hover {
+    color: #7FBC65;
+  }
+
+  .wrong:hover {
+    color: #d44a4a;
+  }
+
+  .notable:hover {
+    color: #ddc443;
+  }
+}
+
 .align-right {
   text-align: right;
 }

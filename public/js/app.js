@@ -1327,6 +1327,7 @@ Vue.component('grading-table', __webpack_require__(47));
     Trivia components
  */
 Vue.component('trivia-form', __webpack_require__(49));
+Vue.component('submissions-table', __webpack_require__(77));
 
 /*
     General Components
@@ -50789,6 +50790,170 @@ module.exports = function(module) {
 __webpack_require__(12);
 module.exports = __webpack_require__(13);
 
+
+/***/ }),
+/* 64 */,
+/* 65 */,
+/* 66 */,
+/* 67 */,
+/* 68 */,
+/* 69 */,
+/* 70 */,
+/* 71 */,
+/* 72 */,
+/* 73 */,
+/* 74 */,
+/* 75 */,
+/* 76 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = {
+    props: ['user'],
+    data: function data() {
+        return {
+            loading: true,
+            submissions: {},
+            test: ['banana', 'airplane', 'soldier']
+        };
+    },
+    created: function created() {
+        this.loadSubmissions();
+    },
+
+    methods: {
+        loadSubmissions: function loadSubmissions() {
+            var _this = this;
+
+            this.loading = true;
+
+            axios.get('/trivia/getAllUserSubmissions').then(function (response) {
+                _this.submissions = response.data;
+                _this.loading = false;
+            }).catch(function (error) {
+                console.log(error);
+                _this.loading = false;
+            });
+        },
+        calcSubmissionTotal: function calcSubmissionTotal(submission) {
+            var total = 0;
+
+            submission.submitted_answers.forEach(function (answer) {
+                if (answer && answer.correct) total++;
+            });
+
+            return total;
+        }
+    },
+    computed: {
+        maxQuestions: function maxQuestions() {
+            var questions = 0;
+
+            this.submissions.forEach(function (submission) {
+                if (submission.submitted_answers.length > questions) {
+                    questions = submission.submitted_answers.length;
+                }
+            });
+
+            return questions;
+        }
+    }
+};
+
+/***/ }),
+/* 77 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Component = __webpack_require__(1)(
+  /* script */
+  __webpack_require__(76),
+  /* template */
+  __webpack_require__(78),
+  /* scopeId */
+  null,
+  /* cssModules */
+  null
+)
+Component.options.__file = "/Users/Jordan/sites/CFBOTrivia/resources/assets/js/components/trivia_form/submissions.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] submissions.vue: functional components are not supported with templates, they should use render functions.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-0acc70a1", Component.options)
+  } else {
+    hotAPI.reload("data-v-0acc70a1", Component.options)
+  }
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 78 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', [(_vm.loading) ? _c('div', {
+    staticClass: "align-center"
+  }, [_c('i', {
+    staticClass: "fa fa-cog fa-spin loading-large"
+  })]) : _c('div', [_c('table', {
+    staticClass: "table"
+  }, [_c('thead', [_c('th', [_vm._v("Question")]), _vm._v(" "), _vm._l((_vm.maxQuestions), function(index) {
+    return _c('th', [_vm._v(_vm._s(index))])
+  }), _vm._v(" "), _c('th', [_vm._v("Total")])], 2), _vm._v(" "), _c('tbody', _vm._l((_vm.submissions), function(submission) {
+    return _c('tr', [_c('td', [_vm._v(_vm._s(submission.form_title))]), _vm._v(" "), _vm._l((_vm.maxQuestions), function(index) {
+      return _c('td', {
+        class: submission.submitted_answers[index - 1] != null ? (submission.submitted_answers[index - 1].correct ? 'table-success' : 'table-danger') : 'table-danger'
+      }, [(submission.submitted_answers[index - 1] != null) ? _c('span', [_vm._v("\n                        " + _vm._s(submission.submitted_answers[index - 1].body) + "\n                    ")]) : _vm._e()])
+    }), _vm._v(" "), _c('td', [_vm._v(_vm._s(_vm.calcSubmissionTotal(submission)))])], 2)
+  }))]), _vm._v("\n\n        " + _vm._s(_vm.submissions) + "\n    ")])])
+},staticRenderFns: []}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-hot-reload-api").rerender("data-v-0acc70a1", module.exports)
+  }
+}
 
 /***/ })
 /******/ ]);

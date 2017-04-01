@@ -32,6 +32,7 @@
             <div class="collapse navbar-collapse">
                 <ul class="nav navbar-nav">
                     <li><a href="/">This Week</a></li>
+                    <li><a href="/trivia/submissions">Submissions</a></li>
                     @if(Auth::User())
                         @if(Auth::User()->isAdmin)
                             <li><a href="/admin">Admin</a></li>

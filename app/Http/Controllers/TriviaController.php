@@ -57,4 +57,24 @@ class TriviaController extends Controller
 
         return $answer->save() ? 'true' : 'false';
     }
+
+    /**
+     * Get all of the users past trivia submissions
+     *
+     * @return array
+     */
+    public function getUserSubmissions() {
+        $formObjs = Form::orderBy('created_at', 'DESC')->get(['id', 'title']);
+        $submissions = [];
+
+        foreach($formObjs as $form) {
+            $submissionObj = [];
+            $submissionObj['form_title'] = $form->title;
+            $submissionObj['submitted_answers'] = Auth::User()->getAllFormSubmissions($form->id);
+
+            array_push($submissions, $submissionObj);
+        }
+
+        return $submissions;
+    }
 }
