@@ -2836,6 +2836,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = {
     data: function data() {
@@ -2899,6 +2906,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         getNextQuestion: function getNextQuestion() {
             var _this2 = this;
 
+            var self = this;
             this.loadingQuestion = true;
             this.stopTimer();
 
@@ -33175,8 +33183,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "form-control",
     attrs: {
       "type": "text",
-      "placeholder": "Answer...",
-      "disabled": _vm.timeUp
+      "placeholder": "Enter answer...",
+      "disabled": _vm.timeUp,
+      "autofocus": ""
     },
     domProps: {
       "value": _vm._s(_vm.answer)

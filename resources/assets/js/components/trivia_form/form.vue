@@ -24,7 +24,14 @@
                     </div>
                     <div v-else>
                         <h4>{{question.body}}</h4>
-                        <input type="text" class="form-control" placeholder="Answer..." v-model="answer" :disabled="timeUp" v-on:keyup.enter="finishQuestion()">
+                        <input
+                                type="text"
+                                class="form-control"
+                                placeholder="Enter answer..."
+                                v-model="answer"
+                                :disabled="timeUp"
+                                v-on:keyup.enter="finishQuestion()"
+                                autofocus>
                         <div class="form-buttons align-right">
                             <button class="btn btn-primary" v-on:click="finishQuestion()" v-if="!lastQuestion">Next >></button>
                             <button class="btn btn-success" v-on:click="finishQuestion()" v-else>Finish</button>
@@ -93,6 +100,7 @@
                 }
             },
             getNextQuestion() {
+                var self = this;
                 this.loadingQuestion = true;
                 this.stopTimer();
 

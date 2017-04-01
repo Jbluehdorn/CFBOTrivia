@@ -24,7 +24,9 @@
                         {{$form->rules_blurb}}
                     </p>
 
-                    <a href="/trivia/current" class="btn btn-primary">I understand the rules</a>
+                    <div class="align-center">
+                        <a href="/trivia/current" class="btn btn-primary">I understand the rules</a>
+                    </div>
                 </div>
             </div>
         </div>
