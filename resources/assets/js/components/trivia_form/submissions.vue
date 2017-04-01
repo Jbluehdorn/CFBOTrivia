@@ -3,6 +3,9 @@
         <div v-if="loading" class="align-center">
             <i class="fa fa-cog fa-spin loading-large"></i>
         </div>
+        <div v-else-if="!submissions.length">
+            <h4>No submissions yet!</h4>
+        </div>
         <div v-else>
             <table class="table">
                 <thead>
@@ -17,13 +20,14 @@
                         <span v-if="submission.submitted_answers[index - 1] != null">
                             {{submission.submitted_answers[index - 1].body}}
                         </span>
+                        <span v-else>
+                            No answer
+                        </span>
                     </td>
                     <td>{{calcSubmissionTotal(submission)}}</td>
                 </tr>
                 </tbody>
             </table>
-
-            {{submissions}}
         </div>
     </div>
 </template>

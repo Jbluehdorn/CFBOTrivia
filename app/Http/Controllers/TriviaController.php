@@ -19,7 +19,11 @@ class TriviaController extends Controller
         $form = Form::active();
         $questionTime = config('trivia.time_per_question');
 
-        return view('trivia/form')->with(compact('form', 'questionTime'));
+        if($form->checkForUserSubmissions(Auth::User()->id)) {
+            return redirect('/formSubmitted');
+        } else {
+            return view('trivia/form')->with(compact('form', 'questionTime'));
+        }
     }
 
     /**
@@ -59,12 +63,12 @@ class TriviaController extends Controller
     }
 
     /**
-     * Get all of the users past trivia submissions
+     * Get all of the users past trivia submissions except for the active form
      *
      * @return array
      */
     public function getUserSubmissions() {
-        $formObjs = Form::orderBy('created_at', 'DESC')->get(['id', 'title']);
+        $formObjs = Form::where('isActive', false)->orderBy('created_at', 'DESC')->get(['id', 'title']);
         $submissions = [];
 
         foreach($formObjs as $form) {
@@ -72,9 +76,26 @@ class TriviaController extends Controller
             $submissionObj['form_title'] = $form->title;
             $submissionObj['submitted_answers'] = Auth::User()->getAllFormSubmissions($form->id);
 
-            array_push($submissions, $submissionObj);
+            if(count($submissionObj['submitted_answers']))
+                array_push($submissions, $submissionObj);
         }
 
         return $submissions;
+    }
+
+    /**
+     * Get the submissions for a single form
+     *
+     * @param $formID
+     * @return submission
+     */
+    public function getSingleFormSubmissions($formID) {
+        $formObj = Form::find($formID);
+
+        $submission = [];
+        $submission['form_title'] = $formObj->title;
+        $submission['submitted_answers'] = Auth::User()->getAllFormSubmissions($formObj->id);
+
+        return $submission;
     }
 }

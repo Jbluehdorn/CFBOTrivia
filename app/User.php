@@ -28,6 +28,12 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
+    /**
+     * Get all submitted answers for a single form
+     *
+     * @param $formID
+     * @return array
+     */
     public function getAllFormSubmissions($formID) {
         $form = Form::find($formID);
         $answers = [];
@@ -37,7 +43,8 @@ class User extends Authenticatable
         foreach($questions as $question) {
             $answer = $question->submittedAnswers->where('user_id', $this->id)->first();
 
-            array_push($answers, $answer);
+            if(!is_null($answer))
+                array_push($answers, $answer);
         }
 
         return $answers;

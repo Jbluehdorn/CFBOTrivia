@@ -16,6 +16,9 @@ Route::get('/logout', 'HomeController@logout');
 Route::get('/newAccount', function() {
    return view('auth/register');
 });
+Route::get('/formSubmitted', function() {
+    return view('/trivia/form_submitted');
+});
 
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'CheckAdmin']], function() {
     Route::get('/', 'AdminController@index');

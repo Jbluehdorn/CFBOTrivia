@@ -2874,7 +2874,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             }
 
             if (this.lastQuestion) {
-                window.location.href = '/';
+                window.location.href = '/formSubmitted';
             } else {
                 this.getNextQuestion();
             }
@@ -50839,6 +50839,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = {
     props: ['user'],
@@ -50935,7 +50939,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "align-center"
   }, [_c('i', {
     staticClass: "fa fa-cog fa-spin loading-large"
-  })]) : _c('div', [_c('table', {
+  })]) : (!_vm.submissions.length) ? _c('div', [_c('h4', [_vm._v("No submissions yet!")])]) : _c('div', [_c('table', {
     staticClass: "table"
   }, [_c('thead', [_c('th', [_vm._v("Question")]), _vm._v(" "), _vm._l((_vm.maxQuestions), function(index) {
     return _c('th', [_vm._v(_vm._s(index))])
@@ -50943,9 +50947,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     return _c('tr', [_c('td', [_vm._v(_vm._s(submission.form_title))]), _vm._v(" "), _vm._l((_vm.maxQuestions), function(index) {
       return _c('td', {
         class: submission.submitted_answers[index - 1] != null ? (submission.submitted_answers[index - 1].correct ? 'table-success' : 'table-danger') : 'table-danger'
-      }, [(submission.submitted_answers[index - 1] != null) ? _c('span', [_vm._v("\n                        " + _vm._s(submission.submitted_answers[index - 1].body) + "\n                    ")]) : _vm._e()])
+      }, [(submission.submitted_answers[index - 1] != null) ? _c('span', [_vm._v("\n                        " + _vm._s(submission.submitted_answers[index - 1].body) + "\n                    ")]) : _c('span', [_vm._v("\n                        No answer\n                    ")])])
     }), _vm._v(" "), _c('td', [_vm._v(_vm._s(_vm.calcSubmissionTotal(submission)))])], 2)
-  }))]), _vm._v("\n\n        " + _vm._s(_vm.submissions) + "\n    ")])])
+  }))])])])
 },staticRenderFns: []}
 module.exports.render._withStripped = true
 if (false) {

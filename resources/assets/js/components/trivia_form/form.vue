@@ -72,7 +72,7 @@
                 }
 
                 if(this.lastQuestion) {
-                    window.location.href = '/';
+                    window.location.href = '/formSubmitted';
                 } else {
                     this.getNextQuestion();
                 }
