@@ -14,7 +14,7 @@ class AddRulesBlurbToForm extends Migration
     public function up()
     {
         Schema::table('forms', function (Blueprint $table) {
-            $table->text('rules_blurb');
+            $table->text('rules_blurb')->nullable();
         });
     }
 
