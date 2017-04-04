@@ -58,6 +58,7 @@ class TriviaController extends Controller
         $answer->body = $body;
         $answer->question_id = $questionID;
         $answer->user_id = Auth::User()->id;
+        $answer->grade();
 
         return $answer->save() ? 'true' : 'false';
     }
