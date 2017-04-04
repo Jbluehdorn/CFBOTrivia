@@ -27,6 +27,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'CheckAdmin']], func
 
     Route::post('/newForm', 'AdminController@createForm');
     Route::post('/setActiveForm', 'AdminController@setActiveForm');
+    Route::post('/setInactiveForm', 'AdminController@setInactiveForm');
     Route::post('/saveFormChanges', 'AdminController@saveFormChanges');
 
     /*

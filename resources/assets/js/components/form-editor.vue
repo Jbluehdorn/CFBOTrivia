@@ -1,7 +1,8 @@
 <template>
     <div>
         <div v-if="form.isActive">
-            This is the <strong class="text-success">Active</strong> Form
+            <span>This is the <strong class="text-success">Active</strong> Form</span> <br>
+            <span class="clickable" @click="setInactive">Click <strong>Here</strong> to make this form Inactive</span>
         </div>
         <div v-else>
             <span>This is an <strong class="text-danger">Inactive</strong> Form</span> <br>
@@ -89,6 +90,16 @@
                     console.log(error);
                 });
 
+            },
+            setInactive() {
+                axios.post('/admin/setInactiveForm', {
+                    formId: this.internalForm.id
+                }).then(response => {
+                    this.internalForm.isActive = false;
+                    this.$forceUpdate();
+                }).catch(error => {
+                    console.log(error);
+                });
             },
             saveForm() {
                 let self = this;

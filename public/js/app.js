@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "./";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 63);
+/******/ 	return __webpack_require__(__webpack_require__.s = 66);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -1080,7 +1080,7 @@ if (typeof DEBUG !== 'undefined' && DEBUG) {
   ) }
 }
 
-var listToStyles = __webpack_require__(60)
+var listToStyles = __webpack_require__(63)
 
 /*
 type StyleObject = {
@@ -1306,7 +1306,7 @@ function applyToTag (styleElement, obj) {
  * building robust, powerful web applications using Vue and Laravel.
  */
 
-__webpack_require__(38);
+__webpack_require__(39);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -1314,26 +1314,26 @@ __webpack_require__(38);
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-Vue.component('vue-paginate', __webpack_require__(56));
-Vue.component('form-editor', __webpack_require__(45));
+Vue.component('vue-paginate', __webpack_require__(59));
+Vue.component('form-editor', __webpack_require__(46));
 
 /*
     Grading components
  */
-Vue.component('grading-form', __webpack_require__(46));
-Vue.component('grading-table', __webpack_require__(47));
+Vue.component('grading-form', __webpack_require__(47));
+Vue.component('grading-table', __webpack_require__(48));
 
 /*
     Trivia components
  */
-Vue.component('trivia-form', __webpack_require__(49));
-Vue.component('submissions-table', __webpack_require__(77));
+Vue.component('trivia-form', __webpack_require__(50));
+Vue.component('submissions-table', __webpack_require__(51));
 
 /*
     General Components
  */
-Vue.component('modal', __webpack_require__(48));
-Vue.component('editable-field', __webpack_require__(44));
+Vue.component('modal', __webpack_require__(49));
+Vue.component('editable-field', __webpack_require__(45));
 
 Vue.filter('percentage', function (value, decimals) {
     if (!value) {
@@ -2375,6 +2375,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = {
     mounted: function mounted() {
@@ -2429,8 +2430,20 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
                 console.log(error);
             });
         },
-        saveForm: function saveForm() {
+        setInactive: function setInactive() {
             var _this2 = this;
+
+            axios.post('/admin/setInactiveForm', {
+                formId: this.internalForm.id
+            }).then(function (response) {
+                _this2.internalForm.isActive = false;
+                _this2.$forceUpdate();
+            }).catch(function (error) {
+                console.log(error);
+            });
+        },
+        saveForm: function saveForm() {
+            var _this3 = this;
 
             var self = this;
             this.saving = true;
@@ -2439,17 +2452,17 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
             axios.post('/admin/saveFormChanges', {
                 form: this.internalForm
             }).then(function (response) {
-                _this2.saving = false;
-                _this2.saveSuccessful = true;
+                _this3.saving = false;
+                _this3.saveSuccessful = true;
 
                 setTimeout(function () {
                     self.saveSuccessful = false;
                 }, 3000);
-                _this2.resetForm();
+                _this3.resetForm();
                 console.log(response);
             }).catch(function (error) {
-                _this2.saving = false;
-                _this2.saveFailed = true;
+                _this3.saving = false;
+                _this3.saveFailed = true;
                 setTimeout(function () {
                     self.saveFailed = false;
                 }, 3000);
@@ -2957,10 +2970,103 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 /***/ }),
 /* 38 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = {
+    props: ['user'],
+    data: function data() {
+        return {
+            loading: true,
+            submissions: {},
+            test: ['banana', 'airplane', 'soldier']
+        };
+    },
+    created: function created() {
+        this.loadSubmissions();
+    },
+
+    methods: {
+        loadSubmissions: function loadSubmissions() {
+            var _this = this;
+
+            this.loading = true;
+
+            axios.get('/trivia/getAllUserSubmissions').then(function (response) {
+                _this.submissions = response.data;
+                _this.loading = false;
+            }).catch(function (error) {
+                console.log(error);
+                _this.loading = false;
+            });
+        },
+        calcSubmissionTotal: function calcSubmissionTotal(submission) {
+            var total = 0;
+
+            submission.submitted_answers.forEach(function (answer) {
+                if (answer && answer.correct) total++;
+            });
+
+            return total;
+        }
+    },
+    computed: {
+        maxQuestions: function maxQuestions() {
+            var questions = 0;
+
+            this.submissions.forEach(function (submission) {
+                if (submission.submitted_answers.length > questions) {
+                    questions = submission.submitted_answers.length;
+                }
+            });
+
+            return questions;
+        }
+    }
+};
+
+/***/ }),
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
-window._ = __webpack_require__(43);
+window._ = __webpack_require__(44);
 
 /**
  * We'll load jQuery and the Bootstrap jQuery plugin which provides support
@@ -2968,9 +3074,9 @@ window._ = __webpack_require__(43);
  * code may be modified to fit the specific needs of your application.
  */
 
-window.$ = window.jQuery = __webpack_require__(42);
+window.$ = window.jQuery = __webpack_require__(43);
 
-__webpack_require__(39);
+__webpack_require__(40);
 
 /**
  * Vue is a modern JavaScript library for building interactive web interfaces
@@ -2978,8 +3084,8 @@ __webpack_require__(39);
  * and simple, leaving you to focus on building your next great project.
  */
 
-window.Vue = __webpack_require__(61);
-__webpack_require__(57);
+window.Vue = __webpack_require__(64);
+__webpack_require__(60);
 
 /**
  * We'll load the axios HTTP library which allows us to easily issue requests
@@ -3008,7 +3114,7 @@ window.axios.defaults.headers.common = {
 // });
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, exports) {
 
 /*!
@@ -5391,7 +5497,7 @@ if (typeof jQuery === 'undefined') {
 
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(10)();
@@ -5405,7 +5511,7 @@ exports.push([module.i, "\n.modal-mask {\n    position: fixed;\n    z-index: 999
 
 
 /***/ }),
-/* 41 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(10)();
@@ -5419,7 +5525,7 @@ exports.push([module.i, "\n.editable-field .fa-pencil {\n    margin-left: 5px;\n
 
 
 /***/ }),
-/* 42 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -15646,7 +15752,7 @@ return jQuery;
 
 
 /***/ }),
-/* 43 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, module) {var __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -32735,21 +32841,21 @@ return jQuery;
   }
 }.call(this));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4), __webpack_require__(62)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4), __webpack_require__(65)(module)))
 
 /***/ }),
-/* 44 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
 /* styles */
-__webpack_require__(59)
+__webpack_require__(62)
 
 var Component = __webpack_require__(1)(
   /* script */
   __webpack_require__(32),
   /* template */
-  __webpack_require__(55),
+  __webpack_require__(58),
   /* scopeId */
   null,
   /* cssModules */
@@ -32776,14 +32882,14 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 45 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Component = __webpack_require__(1)(
   /* script */
   __webpack_require__(33),
   /* template */
-  __webpack_require__(51),
+  __webpack_require__(54),
   /* scopeId */
   null,
   /* cssModules */
@@ -32810,14 +32916,14 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 46 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Component = __webpack_require__(1)(
   /* script */
   __webpack_require__(34),
   /* template */
-  __webpack_require__(50),
+  __webpack_require__(53),
   /* scopeId */
   null,
   /* cssModules */
@@ -32844,14 +32950,14 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 47 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Component = __webpack_require__(1)(
   /* script */
   __webpack_require__(35),
   /* template */
-  __webpack_require__(54),
+  __webpack_require__(57),
   /* scopeId */
   null,
   /* cssModules */
@@ -32878,18 +32984,18 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 48 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
 /* styles */
-__webpack_require__(58)
+__webpack_require__(61)
 
 var Component = __webpack_require__(1)(
   /* script */
   __webpack_require__(36),
   /* template */
-  __webpack_require__(53),
+  __webpack_require__(56),
   /* scopeId */
   null,
   /* cssModules */
@@ -32916,14 +33022,14 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 49 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Component = __webpack_require__(1)(
   /* script */
   __webpack_require__(37),
   /* template */
-  __webpack_require__(52),
+  __webpack_require__(55),
   /* scopeId */
   null,
   /* cssModules */
@@ -32950,7 +33056,70 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 50 */
+/* 51 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Component = __webpack_require__(1)(
+  /* script */
+  __webpack_require__(38),
+  /* template */
+  __webpack_require__(52),
+  /* scopeId */
+  null,
+  /* cssModules */
+  null
+)
+Component.options.__file = "/Users/Jordan/sites/CFBOTrivia/resources/assets/js/components/trivia_form/submissions.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] submissions.vue: functional components are not supported with templates, they should use render functions.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-0acc70a1", Component.options)
+  } else {
+    hotAPI.reload("data-v-0acc70a1", Component.options)
+  }
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 52 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', [(_vm.loading) ? _c('div', {
+    staticClass: "align-center"
+  }, [_c('i', {
+    staticClass: "fa fa-cog fa-spin loading-large"
+  })]) : (!_vm.submissions.length) ? _c('div', [_c('h4', [_vm._v("No submissions yet!")])]) : _c('div', [_c('table', {
+    staticClass: "table"
+  }, [_c('thead', [_c('th', [_vm._v("Question")]), _vm._v(" "), _vm._l((_vm.maxQuestions), function(index) {
+    return _c('th', [_vm._v(_vm._s(index))])
+  }), _vm._v(" "), _c('th', [_vm._v("Total")])], 2), _vm._v(" "), _c('tbody', _vm._l((_vm.submissions), function(submission) {
+    return _c('tr', [_c('td', [_vm._v(_vm._s(submission.form_title))]), _vm._v(" "), _vm._l((_vm.maxQuestions), function(index) {
+      return _c('td', {
+        class: submission.submitted_answers[index - 1] != null ? (submission.submitted_answers[index - 1].correct ? 'table-success' : 'table-danger') : 'table-danger'
+      }, [(submission.submitted_answers[index - 1] != null) ? _c('span', [_vm._v("\n                        " + _vm._s(submission.submitted_answers[index - 1].body) + "\n                    ")]) : _c('span', [_vm._v("\n                        No answer\n                    ")])])
+    }), _vm._v(" "), _c('td', [_vm._v(_vm._s(_vm.calcSubmissionTotal(submission)))])], 2)
+  }))])])])
+},staticRenderFns: []}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-hot-reload-api").rerender("data-v-0acc70a1", module.exports)
+  }
+}
+
+/***/ }),
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -32993,13 +33162,16 @@ if (false) {
 }
 
 /***/ }),
-/* 51 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', [(_vm.form.isActive) ? _c('div', [_vm._v("\n        This is the "), _c('strong', {
-    staticClass: "text-success"
-  }, [_vm._v("Active")]), _vm._v(" Form\n    ")]) : _c('div', [_c('span', [_vm._v("This is an "), _c('strong', {
+  return _c('div', [(_vm.form.isActive) ? _c('div', [_vm._m(0), _vm._v(" "), _c('br'), _vm._v(" "), _c('span', {
+    staticClass: "clickable",
+    on: {
+      "click": _vm.setInactive
+    }
+  }, [_vm._v("Click "), _c('strong', [_vm._v("Here")]), _vm._v(" to make this form Inactive")])]) : _c('div', [_c('span', [_vm._v("This is an "), _c('strong', {
     staticClass: "text-danger"
   }, [_vm._v("Inactive")]), _vm._v(" Form")]), _vm._v(" "), _c('br'), _vm._v(" "), _c('span', {
     staticClass: "clickable",
@@ -33128,7 +33300,11 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   }, [_vm._v("Add Question "), _c('i', {
     staticClass: "fa fa-plus-circle"
   })])])], 2)], 1)
-},staticRenderFns: []}
+},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('span', [_vm._v("This is the "), _c('strong', {
+    staticClass: "text-success"
+  }, [_vm._v("Active")]), _vm._v(" Form")])
+}]}
 module.exports.render._withStripped = true
 if (false) {
   module.hot.accept()
@@ -33138,7 +33314,7 @@ if (false) {
 }
 
 /***/ }),
-/* 52 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -33233,7 +33409,7 @@ if (false) {
 }
 
 /***/ }),
-/* 53 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -33270,7 +33446,7 @@ if (false) {
 }
 
 /***/ }),
-/* 54 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -33419,7 +33595,7 @@ if (false) {
 }
 
 /***/ }),
-/* 55 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -33560,7 +33736,7 @@ if (false) {
 }
 
 /***/ }),
-/* 56 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/**
@@ -39817,7 +39993,7 @@ if (false) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ }),
-/* 57 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -42104,13 +42280,13 @@ module.exports = VueRouter;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ }),
-/* 58 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(40);
+var content = __webpack_require__(41);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
@@ -42130,13 +42306,13 @@ if(false) {
 }
 
 /***/ }),
-/* 59 */
+/* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(41);
+var content = __webpack_require__(42);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
@@ -42156,7 +42332,7 @@ if(false) {
 }
 
 /***/ }),
-/* 60 */
+/* 63 */
 /***/ (function(module, exports) {
 
 /**
@@ -42189,7 +42365,7 @@ module.exports = function listToStyles (parentId, list) {
 
 
 /***/ }),
-/* 61 */
+/* 64 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -50765,7 +50941,7 @@ module.exports = Vue$3;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2), __webpack_require__(4)))
 
 /***/ }),
-/* 62 */
+/* 65 */
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -50793,180 +50969,12 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 63 */
+/* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(12);
 module.exports = __webpack_require__(13);
 
-
-/***/ }),
-/* 64 */,
-/* 65 */,
-/* 66 */,
-/* 67 */,
-/* 68 */,
-/* 69 */,
-/* 70 */,
-/* 71 */,
-/* 72 */,
-/* 73 */,
-/* 74 */,
-/* 75 */,
-/* 76 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-/* harmony default export */ __webpack_exports__["default"] = {
-    props: ['user'],
-    data: function data() {
-        return {
-            loading: true,
-            submissions: {},
-            test: ['banana', 'airplane', 'soldier']
-        };
-    },
-    created: function created() {
-        this.loadSubmissions();
-    },
-
-    methods: {
-        loadSubmissions: function loadSubmissions() {
-            var _this = this;
-
-            this.loading = true;
-
-            axios.get('/trivia/getAllUserSubmissions').then(function (response) {
-                _this.submissions = response.data;
-                _this.loading = false;
-            }).catch(function (error) {
-                console.log(error);
-                _this.loading = false;
-            });
-        },
-        calcSubmissionTotal: function calcSubmissionTotal(submission) {
-            var total = 0;
-
-            submission.submitted_answers.forEach(function (answer) {
-                if (answer && answer.correct) total++;
-            });
-
-            return total;
-        }
-    },
-    computed: {
-        maxQuestions: function maxQuestions() {
-            var questions = 0;
-
-            this.submissions.forEach(function (submission) {
-                if (submission.submitted_answers.length > questions) {
-                    questions = submission.submitted_answers.length;
-                }
-            });
-
-            return questions;
-        }
-    }
-};
-
-/***/ }),
-/* 77 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var Component = __webpack_require__(1)(
-  /* script */
-  __webpack_require__(76),
-  /* template */
-  __webpack_require__(78),
-  /* scopeId */
-  null,
-  /* cssModules */
-  null
-)
-Component.options.__file = "/Users/Jordan/sites/CFBOTrivia/resources/assets/js/components/trivia_form/submissions.vue"
-if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
-if (Component.options.functional) {console.error("[vue-loader] submissions.vue: functional components are not supported with templates, they should use render functions.")}
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-0acc70a1", Component.options)
-  } else {
-    hotAPI.reload("data-v-0acc70a1", Component.options)
-  }
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
-/* 78 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', [(_vm.loading) ? _c('div', {
-    staticClass: "align-center"
-  }, [_c('i', {
-    staticClass: "fa fa-cog fa-spin loading-large"
-  })]) : (!_vm.submissions.length) ? _c('div', [_c('h4', [_vm._v("No submissions yet!")])]) : _c('div', [_c('table', {
-    staticClass: "table"
-  }, [_c('thead', [_c('th', [_vm._v("Question")]), _vm._v(" "), _vm._l((_vm.maxQuestions), function(index) {
-    return _c('th', [_vm._v(_vm._s(index))])
-  }), _vm._v(" "), _c('th', [_vm._v("Total")])], 2), _vm._v(" "), _c('tbody', _vm._l((_vm.submissions), function(submission) {
-    return _c('tr', [_c('td', [_vm._v(_vm._s(submission.form_title))]), _vm._v(" "), _vm._l((_vm.maxQuestions), function(index) {
-      return _c('td', {
-        class: submission.submitted_answers[index - 1] != null ? (submission.submitted_answers[index - 1].correct ? 'table-success' : 'table-danger') : 'table-danger'
-      }, [(submission.submitted_answers[index - 1] != null) ? _c('span', [_vm._v("\n                        " + _vm._s(submission.submitted_answers[index - 1].body) + "\n                    ")]) : _c('span', [_vm._v("\n                        No answer\n                    ")])])
-    }), _vm._v(" "), _c('td', [_vm._v(_vm._s(_vm.calcSubmissionTotal(submission)))])], 2)
-  }))])])])
-},staticRenderFns: []}
-module.exports.render._withStripped = true
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-0acc70a1", module.exports)
-  }
-}
 
 /***/ })
 /******/ ]);

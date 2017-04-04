@@ -65,7 +65,7 @@ class AdminController extends Controller
     /**
      * Set a form as the active form and the rest to inactive
      *
-     * @param Request $request
+     * @param int formId
      * @return [Form]
      */
     public function setActiveForm(Request $request) {
@@ -80,6 +80,27 @@ class AdminController extends Controller
         return $forms;
     }
 
+
+    /**
+     * Set the selected form as inactive
+     *
+     * @param int formId
+     * @return App/Form
+     */
+    public function setInactiveForm(Request $request) {
+        $form = Form::find($request->formId);
+        $form->isActive = false;
+        $form->save();
+
+        return $form;
+    }
+
+    /**
+     * Save all various changes to the form
+     *
+     * @param Request $request
+     * @return mixed
+     */
     public function saveFormChanges(Request $request) {
         $form = $request->form;
 
