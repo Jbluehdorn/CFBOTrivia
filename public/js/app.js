@@ -2592,6 +2592,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = {
     data: function data() {
@@ -2602,7 +2605,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             orderAsc: true,
             hidden: false,
             saving: false,
-            correctHidden: false
+            correctHidden: false,
+            notableOnly: false
         };
     },
     created: function created() {
@@ -2665,6 +2669,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 console.log('Error');
                 console.log(error);
             });
+        },
+        checkIfAnswerHidden: function checkIfAnswerHidden(answer) {
+            var hidden = false;
+
+            if (this.correctHidden && answer.correct) hidden = true;
+
+            if (this.notableOnly && !answer.notable) hidden = true;
+
+            return hidden;
         }
     },
     computed: {
@@ -33098,7 +33111,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "align-center"
   }, [_c('i', {
     staticClass: "fa fa-cog fa-spin loading-large"
-  })]) : (!_vm.submissions.length) ? _c('div', [_c('h4', [_vm._v("No submissions yet!")])]) : _c('div', [_c('table', {
+  })]) : (!_vm.submissions.length) ? _c('div', [_c('h4', [_vm._v("No submissions yet!")])]) : _c('div', {
+    staticClass: "table-responsive"
+  }, [_c('table', {
     staticClass: "table"
   }, [_c('thead', [_c('th', [_vm._v("Question")]), _vm._v(" "), _vm._l((_vm.maxQuestions), function(index) {
     return _c('th', [_vm._v(_vm._s(index))])
@@ -33450,7 +33465,9 @@ if (false) {
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', [_c('strong', [_vm._v("Accepted Answers:")]), _vm._v(" "), _vm._l((_vm.internalQuestion.answers), function(answer, key) {
+  return _c('div', {
+    staticClass: "table-responsive"
+  }, [_c('strong', [_vm._v("Accepted Answers:")]), _vm._v(" "), _vm._l((_vm.internalQuestion.answers), function(answer, key) {
     return _c('span', {
       staticClass: "answer"
     }, [_vm._v(_vm._s(answer.body) + _vm._s(key != _vm.internalQuestion.answers.length - 1 ? ',' : '') + " ")])
@@ -33512,7 +33529,38 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         }
       }
     }
-  }), _vm._v(" Hide Correct Answers")]), _vm._v(" "), _c('th', [_c('span', {
+  }), _vm._v(" Hide Correct Answers\n                "), _c('input', {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: (_vm.notableOnly),
+      expression: "notableOnly"
+    }],
+    attrs: {
+      "type": "checkbox"
+    },
+    domProps: {
+      "checked": Array.isArray(_vm.notableOnly) ? _vm._i(_vm.notableOnly, null) > -1 : (_vm.notableOnly)
+    },
+    on: {
+      "click": function($event) {
+        var $$a = _vm.notableOnly,
+          $$el = $event.target,
+          $$c = $$el.checked ? (true) : (false);
+        if (Array.isArray($$a)) {
+          var $$v = null,
+            $$i = _vm._i($$a, $$v);
+          if ($$c) {
+            $$i < 0 && (_vm.notableOnly = $$a.concat($$v))
+          } else {
+            $$i > -1 && (_vm.notableOnly = $$a.slice(0, $$i).concat($$a.slice($$i + 1)))
+          }
+        } else {
+          _vm.notableOnly = $$c
+        }
+      }
+    }
+  }), _vm._v(" Notable Only\n            ")]), _vm._v(" "), _c('th', [_c('span', {
     directives: [{
       name: "show",
       rawName: "v-show",
@@ -33526,8 +33574,8 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       directives: [{
         name: "show",
         rawName: "v-show",
-        value: (!answer.correct || !_vm.correctHidden),
-        expression: "!answer.correct || !correctHidden"
+        value: (!_vm.checkIfAnswerHidden(answer)),
+        expression: "!checkIfAnswerHidden(answer)"
       }],
       class: answer.correct ? 'table-success' : (answer.notable ? 'table-warning' : 'table-danger')
     }, [_c('td', [_vm._v(_vm._s(answer.user.name))]), _vm._v(" "), _c('td', [_vm._v(_vm._s(answer.body))]), _vm._v(" "), _c('td', {

@@ -6,7 +6,7 @@
         <div v-else-if="!submissions.length">
             <h4>No submissions yet!</h4>
         </div>
-        <div v-else>
+        <div class="table-responsive" v-else>
             <table class="table">
                 <thead>
                 <th>Question</th>

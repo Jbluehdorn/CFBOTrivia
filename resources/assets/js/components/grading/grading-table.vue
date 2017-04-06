@@ -1,12 +1,15 @@
 <template>
-    <div>
+    <div class="table-responsive">
         <strong>Accepted Answers:</strong>
         <span class="answer" v-for="(answer, key) in internalQuestion.answers">{{answer.body}}{{key != internalQuestion.answers.length - 1 ? ',' : ''}} </span>
         <table class="table">
             <thead>
             <tr>
                 <th colspan="3"><input type="text" placeholder="Search by Username..." class="form-control" v-model="searchTerm"></th>
-                <th><input type="checkbox" v-model="correctHidden"> Hide Correct Answers</th>
+                <th>
+                    <input type="checkbox" v-model="correctHidden"> Hide Correct Answers
+                    <input type="checkbox" v-model="notableOnly"> Notable Only
+                </th>
                 <th>
                     <span v-show="saving">Saving... <i class="fa fa-spin fa-cog"></i></span>
                 </th>
@@ -22,7 +25,7 @@
             <tbody>
             <tr v-for="answer in filteredAnswers"
                 :class="answer.correct? 'table-success' : (answer.notable ? 'table-warning' : 'table-danger')"
-                v-show="!answer.correct || !correctHidden">
+                v-show="!checkIfAnswerHidden(answer)">
                 <td>{{answer.user.name}}</td>
                 <td>{{answer.body}}</td>
                 <td class="align-center"><i class="fa fa-check clickable correct" v-on:click="markCorrect(answer)"></i></td>
@@ -56,7 +59,8 @@
                 orderAsc: true,
                 hidden: false,
                 saving: false,
-                correctHidden: false
+                correctHidden: false,
+                notableOnly: false
             };
         },
         created() {
@@ -112,6 +116,17 @@
                     console.log('Error');
                     console.log(error);
                 });
+            },
+            checkIfAnswerHidden(answer) {
+                let hidden = false;
+
+                if(this.correctHidden && answer.correct)
+                    hidden = true;
+
+                if(this.notableOnly && !answer.notable)
+                    hidden = true;
+
+                return hidden;
             }
         },
         computed: {
