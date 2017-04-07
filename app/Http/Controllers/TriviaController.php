@@ -99,4 +99,18 @@ class TriviaController extends Controller
 
         return $submission;
     }
+
+    public function ResetSubmissions() {
+        $form = Form::where('isActive', true)->first();
+
+        foreach($form->questions as $question) {
+            foreach($question->submittedAnswers as $answer) {
+                if($answer->user_id == Auth::User()->id) {
+                    $answer->delete();
+                }
+            }
+        }
+
+        return redirect('/');
+    }
 }

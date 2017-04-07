@@ -20,6 +20,8 @@ Route::get('/formSubmitted', function() {
     return view('/trivia/form_submitted');
 });
 
+Route::get('/ResetSubmissions', 'TriviaController@ResetSubmissions');
+
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'CheckAdmin']], function() {
     Route::get('/', 'AdminController@index');
     Route::get('/newForm', 'AdminController@newForm');
