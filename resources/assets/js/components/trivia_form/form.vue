@@ -10,8 +10,8 @@
             <div class="panel-heading" style="padding-bottom: 15px;">
                 <h3>
                     {{internalForm.title}}
-                    <span v-if="!timeUp" class="pull-right"><i class="fa fa-clock-o"></i> {{timeRemaining | time}}</span>
-                    <span v-else class="pull-right text-danger"><i class="fa fa-times"></i> Times up! {{timeRemaining | time}}</span>
+                    <span v-if="!timeUp"><i class="fa fa-clock-o"></i> {{timeRemaining | time}}</span>
+                    <span v-else class="text-danger"><i class="fa fa-times"></i> Times up! {{timeRemaining | time}}</span>
                 </h3>
             </div>
             <div class="panel-body">

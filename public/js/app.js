@@ -33344,12 +33344,10 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticStyle: {
       "padding-bottom": "15px"
     }
-  }, [_c('h3', [_vm._v("\n                " + _vm._s(_vm.internalForm.title) + "\n                "), (!_vm.timeUp) ? _c('span', {
-    staticClass: "pull-right"
-  }, [_c('i', {
+  }, [_c('h3', [_vm._v("\n                " + _vm._s(_vm.internalForm.title) + "\n                "), (!_vm.timeUp) ? _c('span', [_c('i', {
     staticClass: "fa fa-clock-o"
   }), _vm._v(" " + _vm._s(_vm._f("time")(_vm.timeRemaining)))]) : _c('span', {
-    staticClass: "pull-right text-danger"
+    staticClass: "text-danger"
   }, [_c('i', {
     staticClass: "fa fa-times"
   }), _vm._v(" Times up! " + _vm._s(_vm._f("time")(_vm.timeRemaining)))])])]), _vm._v(" "), _c('div', {
