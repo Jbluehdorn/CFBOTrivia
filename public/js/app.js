@@ -33334,13 +33334,16 @@ if (false) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('div', {
-    staticClass: "col-xs-8 col-xs-offset-2 trivia-form"
+    staticClass: "col-xs-12 col-sm-8 col-sm-offset-2 trivia-form"
   }, [(_vm.loading) ? _c('div', {
     staticClass: "panel panel-default"
   }, [_vm._m(0)]) : _c('div', {
     staticClass: "panel panel-default"
   }, [_c('div', {
-    staticClass: "panel-heading"
+    staticClass: "panel-heading",
+    staticStyle: {
+      "padding-bottom": "15px"
+    }
   }, [_c('h3', [_vm._v("\n                " + _vm._s(_vm.internalForm.title) + "\n                "), (!_vm.timeUp) ? _c('span', {
     staticClass: "pull-right"
   }, [_c('i', {

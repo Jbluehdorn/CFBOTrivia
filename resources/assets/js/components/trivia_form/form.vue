@@ -1,5 +1,5 @@
 <template>
-    <div class="col-xs-8 col-xs-offset-2 trivia-form">
+    <div class="col-xs-12 col-sm-8 col-sm-offset-2 trivia-form">
         <div class="panel panel-default" v-if="loading">
             <div class="panel-heading align-center">
                 <i class="fa fa-cog fa-spin loading-large"></i>
@@ -7,7 +7,7 @@
         </div>
 
         <div class="panel panel-default" v-else>
-            <div class="panel-heading">
+            <div class="panel-heading" style="padding-bottom: 15px;">
                 <h3>
                     {{internalForm.title}}
                     <span v-if="!timeUp" class="pull-right"><i class="fa fa-clock-o"></i> {{timeRemaining | time}}</span>
