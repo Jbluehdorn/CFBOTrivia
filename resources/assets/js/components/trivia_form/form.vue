@@ -23,7 +23,7 @@
                         <i class="fa fa-cog fa-spin loading-medium"></i>
                     </div>
                     <div v-else>
-                        <h4>{{question.body}}</h4>
+                        <h4 v-html="question.body"></h4>
                         <input
                                 type="text"
                                 class="form-control"
@@ -112,6 +112,8 @@
 
                     this.question = response.data.data[0];
 
+                    this.question.body = this.parseUrl(this.question.body);
+
                     this.loadingQuestion = false;
                     this.timeRemaining = this.time;
                     this.timeUp = false;
@@ -122,6 +124,26 @@
                     this.loadingQuestion = false;
                     this.timeUp = false;
                 });
+            },
+            parseUrl($string) {
+                console.log('Parsing...');
+                let __urlRegex = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+                let __imgRegex = /\.(?:jpe?g|gif|png)$/i;
+
+                return $string.replace(__urlRegex,function(match){
+                        __imgRegex.lastIndex=0;
+                        if(__imgRegex.test(match)){
+                            let thing = '<img src="'+match+'" class="questionPic" />';
+                            console.log(thing);
+                            return thing;
+                        }
+                        else{
+                            let thing = '<a href="'+match+'" target="_blank">'+match+'</a>';
+                            console.log(thing);
+                            return thing;
+                        }
+                    }
+                );
             },
             start() {
                 this.getNextQuestion();

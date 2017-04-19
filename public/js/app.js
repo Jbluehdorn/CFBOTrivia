@@ -2944,6 +2944,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
                 _this2.question = response.data.data[0];
 
+                _this2.question.body = _this2.parseUrl(_this2.question.body);
+
                 _this2.loadingQuestion = false;
                 _this2.timeRemaining = _this2.time;
                 _this2.timeUp = false;
@@ -2953,6 +2955,24 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 console.log(error);
                 _this2.loadingQuestion = false;
                 _this2.timeUp = false;
+            });
+        },
+        parseUrl: function parseUrl($string) {
+            console.log('Parsing...');
+            var __urlRegex = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+            var __imgRegex = /\.(?:jpe?g|gif|png)$/i;
+
+            return $string.replace(__urlRegex, function (match) {
+                __imgRegex.lastIndex = 0;
+                if (__imgRegex.test(match)) {
+                    var thing = '<img src="' + match + '" class="questionPic" />';
+                    console.log(thing);
+                    return thing;
+                } else {
+                    var _thing = '<a href="' + match + '" target="_blank">' + match + '</a>';
+                    console.log(_thing);
+                    return _thing;
+                }
             });
         },
         start: function start() {
@@ -33365,7 +33385,11 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "align-center"
   }, [_c('i', {
     staticClass: "fa fa-cog fa-spin loading-medium"
-  })]) : _c('div', [_c('h4', [_vm._v(_vm._s(_vm.question.body))]), _vm._v(" "), _c('input', {
+  })]) : _c('div', [_c('h4', {
+    domProps: {
+      "innerHTML": _vm._s(_vm.question.body)
+    }
+  }), _vm._v(" "), _c('input', {
     directives: [{
       name: "model",
       rawName: "v-model",
