@@ -1,5 +1,5 @@
 <?php
 
 return [
-  'time_per_question' => 20
+  'time_per_question' => 30
 ];
