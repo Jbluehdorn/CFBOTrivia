@@ -36,7 +36,7 @@
 
                     <div class="align-center">
                         <a href="/trivia/current" class="btn btn-primary">I understand the rules</a>
-                        <a href="/ResetSubmissions" class="btn btn-danger">Reset Submissions</a>
+                        {{--<a href="/ResetSubmissions" class="btn btn-danger">Reset Submissions</a>--}}
                     </div>
                 </div>
 
