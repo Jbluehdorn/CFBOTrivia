@@ -22,7 +22,7 @@
                     <div class="align-center" v-if="loadingQuestion">
                         <i class="fa fa-cog fa-spin loading-medium"></i>
                     </div>
-                    <div v-else>
+                    <div v-else-if="!readyForReview">
                         <h4 v-html="question.body"></h4>
                         <input
                                 type="text"
@@ -33,8 +33,21 @@
                                 v-on:keyup.enter="finishQuestion()"
                                 autofocus>
                         <div class="form-buttons align-right">
-                            <button class="btn btn-primary" v-on:click="finishQuestion()" v-if="!lastQuestion">Next >></button>
-                            <button class="btn btn-success" v-on:click="finishQuestion()" v-else>Finish</button>
+                            <button class="btn btn-primary" v-on:click="finishQuestion()">Next >></button>
+                        </div>
+                    </div>
+                    <div v-else>
+                        <h3>Review Answers</h3>
+                        <div v-for="answer in answersToSubmit">
+                            <h5 v-html="answer.question"></h5>
+                            <input
+                                    type="text"
+                                    class="form-control"
+                                    v-model="answer.answerBody"
+                                    :disabled="timeUp">
+                        </div>
+                        <div class="form-buttons align-right">
+                            <button class="btn btn-success" v-on:click="submitForm()">Finish</button>
                         </div>
                     </div>
                 </div>
@@ -53,11 +66,14 @@
                 loadingQuestion: false,
                 question: {},
                 started: false,
-                lastQuestion: false,
+                allQuestionsLoaded: false,
+                readyForReview: false,
                 answer: '',
                 timeRemaining: 0,
                 timeUp: false,
                 timer: null,
+                placeHolder: '---',
+                answersToSubmit: [],
                 //prevents multiple submissions
                 answerSubmitted: false
             }
@@ -74,32 +90,41 @@
         methods: {
             finishQuestion() {
                 this.loadingQuestion = true;
-                if(!this.timeUp) {
-                    this.submitAnswer();
+
+                if(this.timeUp) {
+                    this.answer = '';
                 }
 
-                if(this.lastQuestion) {
-                    window.location.href = '/formSubmitted';
+                this.submitAnswer();
+
+                if(this.allQuestionsLoaded) {
+                    this.readyForReview = true;
+                    this.loadingQuestion = false;
                 } else {
                     this.getNextQuestion();
                 }
             },
             submitAnswer() {
-                if(this.answer.length && !this.answerSubmitted) {
-                    this.answerSubmitted = true;
-                    axios.post('/trivia/submitAnswer', {
-                        answerBody: this.answer,
-                        questionID: this.question.id
-                    }).then(response => {
-                        console.log(response);
-                        this.answerSubmitted = false;
-                    }).catch(error => {
-                        console.log(error);
-                        this.answerSubmitted = false;
-                    });
+                if(this.timeUp || !this.answer.length) {
+                    this.answer = this.placeHolder;
                 }
+
+                this.answersToSubmit.push({answerBody: this.answer, questionID: this.question.id, question: this.question.body});
+            },
+            submitForm() {
+                axios.post('/trivia/submitForm', {
+                    answers: this.answersToSubmit
+                }).then(response => {
+                    window.location.href = '/formSubmitted';
+                    console.log(response);
+                }).catch(error => {
+                    console.log(error);
+                });
             },
             getNextQuestion() {
+                if(this.allQuestionsLoaded)
+                    return;
+
                 var self = this;
                 this.loadingQuestion = true;
                 this.stopTimer();
@@ -107,7 +132,7 @@
                 axios.get(this.nextPageUrl).then(response => {
                     this.nextPageUrl = response.data.next_page_url;
                     if(this.nextPageUrl == null) {
-                        this.lastQuestion = true;
+                        this.allQuestionsLoaded = true;
                     }
 
                     this.question = response.data.data[0];

@@ -45,15 +45,25 @@ class TriviaController extends Controller
     }
 
     /**
+     * Submits all answers for a user
+     *
+     * @param Request $request
+     */
+    public function submitAllAnswers(Request $request) {
+        $answers = $request->input('answers');
+
+        foreach($answers as $answer) {
+            $this->submitAnswer($answer['questionID'], $answer['answerBody']);
+        }
+    }
+
+    /**
      * Submit an answer
      *
      * @param string answerBody
      * @param int questionID
      */
-    public function submitAnswer(Request $request) {
-        $body = $request->input('answerBody');
-        $questionID = $request->input('questionID');
-
+    public function submitAnswer($questionID, $body) {
         $answer = new SubmittedAnswer();
         $answer->body = $body;
         $answer->question_id = $questionID;
