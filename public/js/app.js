@@ -2869,6 +2869,19 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = {
     data: function data() {
@@ -2879,11 +2892,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             loadingQuestion: false,
             question: {},
             started: false,
-            lastQuestion: false,
+            allQuestionsLoaded: false,
+            readyForReview: false,
             answer: '',
             timeRemaining: 0,
             timeUp: false,
             timer: null,
+            placeHolder: '---',
+            answersToSubmit: [],
             //prevents multiple submissions
             answerSubmitted: false
         };
@@ -2902,59 +2918,65 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     methods: {
         finishQuestion: function finishQuestion() {
             this.loadingQuestion = true;
-            if (!this.timeUp) {
-                this.submitAnswer();
+
+            if (this.timeUp) {
+                this.answer = '';
             }
 
-            if (this.lastQuestion) {
-                window.location.href = '/formSubmitted';
+            this.submitAnswer();
+
+            if (this.allQuestionsLoaded) {
+                this.readyForReview = true;
+                this.loadingQuestion = false;
             } else {
                 this.getNextQuestion();
             }
         },
         submitAnswer: function submitAnswer() {
-            var _this = this;
-
-            if (this.answer.length && !this.answerSubmitted) {
-                this.answerSubmitted = true;
-                axios.post('/trivia/submitAnswer', {
-                    answerBody: this.answer,
-                    questionID: this.question.id
-                }).then(function (response) {
-                    console.log(response);
-                    _this.answerSubmitted = false;
-                }).catch(function (error) {
-                    console.log(error);
-                    _this.answerSubmitted = false;
-                });
+            if (this.timeUp || !this.answer.length) {
+                this.answer = this.placeHolder;
             }
+
+            this.answersToSubmit.push({ answerBody: this.answer, questionID: this.question.id, question: this.question.body });
+        },
+        submitForm: function submitForm() {
+            axios.post('/trivia/submitForm', {
+                answers: this.answersToSubmit
+            }).then(function (response) {
+                window.location.href = '/formSubmitted';
+                console.log(response);
+            }).catch(function (error) {
+                console.log(error);
+            });
         },
         getNextQuestion: function getNextQuestion() {
-            var _this2 = this;
+            var _this = this;
+
+            if (this.allQuestionsLoaded) return;
 
             var self = this;
             this.loadingQuestion = true;
             this.stopTimer();
 
             axios.get(this.nextPageUrl).then(function (response) {
-                _this2.nextPageUrl = response.data.next_page_url;
-                if (_this2.nextPageUrl == null) {
-                    _this2.lastQuestion = true;
+                _this.nextPageUrl = response.data.next_page_url;
+                if (_this.nextPageUrl == null) {
+                    _this.allQuestionsLoaded = true;
                 }
 
-                _this2.question = response.data.data[0];
+                _this.question = response.data.data[0];
 
-                _this2.question.body = _this2.parseUrl(_this2.question.body);
+                _this.question.body = _this.parseUrl(_this.question.body);
 
-                _this2.loadingQuestion = false;
-                _this2.timeRemaining = _this2.time;
-                _this2.timeUp = false;
-                _this2.answer = '';
-                _this2.startTimer();
+                _this.loadingQuestion = false;
+                _this.timeRemaining = _this.time;
+                _this.timeUp = false;
+                _this.answer = '';
+                _this.startTimer();
             }).catch(function (error) {
                 console.log(error);
-                _this2.loadingQuestion = false;
-                _this2.timeUp = false;
+                _this.loadingQuestion = false;
+                _this.timeUp = false;
             });
         },
         parseUrl: function parseUrl($string) {
@@ -33385,7 +33407,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "align-center"
   }, [_c('i', {
     staticClass: "fa fa-cog fa-spin loading-medium"
-  })]) : _c('div', [_c('h4', {
+  })]) : (!_vm.readyForReview) ? _c('div', [_c('h4', {
     domProps: {
       "innerHTML": _vm._s(_vm.question.body)
     }
@@ -33418,21 +33440,50 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }), _vm._v(" "), _c('div', {
     staticClass: "form-buttons align-right"
-  }, [(!_vm.lastQuestion) ? _c('button', {
+  }, [_c('button', {
     staticClass: "btn btn-primary",
     on: {
       "click": function($event) {
         _vm.finishQuestion()
       }
     }
-  }, [_vm._v("Next >>")]) : _c('button', {
+  }, [_vm._v("Next >>")])])]) : _c('div', [_c('h3', [_vm._v("Review Answers")]), _vm._v(" "), _vm._l((_vm.answersToSubmit), function(answer) {
+    return _c('div', [_c('h5', {
+      domProps: {
+        "innerHTML": _vm._s(answer.question)
+      }
+    }), _vm._v(" "), _c('input', {
+      directives: [{
+        name: "model",
+        rawName: "v-model",
+        value: (answer.answerBody),
+        expression: "answer.answerBody"
+      }],
+      staticClass: "form-control",
+      attrs: {
+        "type": "text",
+        "disabled": _vm.timeUp
+      },
+      domProps: {
+        "value": _vm._s(answer.answerBody)
+      },
+      on: {
+        "input": function($event) {
+          if ($event.target.composing) { return; }
+          answer.answerBody = $event.target.value
+        }
+      }
+    })])
+  }), _vm._v(" "), _c('div', {
+    staticClass: "form-buttons align-right"
+  }, [_c('button', {
     staticClass: "btn btn-success",
     on: {
       "click": function($event) {
-        _vm.finishQuestion()
+        _vm.submitForm()
       }
     }
-  }, [_vm._v("Finish")])])])])])])])
+  }, [_vm._v("Finish")])])], 2)])])])])
 },staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('div', {
     staticClass: "panel-heading align-center"
