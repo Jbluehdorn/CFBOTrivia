@@ -7,12 +7,16 @@ use Illuminate\Database\Eloquent\Model;
 class Form extends Model
 {
     protected $fillable = [
-        'title'
+        'title', 'season_id'
     ];
 
     protected $with = [
-        'questions'
+        'questions', 'season'
     ];
+
+    public function season() {
+        return $this->belongsTo('App\Season');
+    }
 
     public function questions() {
         return $this->hasMany('App\Question');

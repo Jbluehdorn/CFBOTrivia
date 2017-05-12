@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Form;
 use App\Answer;
 use App\Question;
+use App\Season;
 
 class AdminController extends Controller
 {
@@ -16,7 +17,9 @@ class AdminController extends Controller
      */
     public function index() {
         $forms = Form::get();
-        return view('admin/all')->with(compact('forms'));
+        $seasons = Season::get();
+
+        return view('admin/all')->with(compact('forms', 'seasons'));
     }
 
     /**
@@ -25,7 +28,9 @@ class AdminController extends Controller
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function newForm() {
-        return view('admin/new');
+        $seasons = Season::get();
+
+        return view('admin/new')->with(compact('seasons'));
     }
 
 
@@ -37,6 +42,7 @@ class AdminController extends Controller
      */
     public function createForm(Request $request) {
         $form = new Form($request->all());
+
         $form->save();
 
         return redirect('/admin/edit/' . $form->id);

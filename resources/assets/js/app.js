@@ -13,7 +13,8 @@ require('./bootstrap');
  */
 
 Vue.component('vue-paginate', require('vue-paginate'));
-Vue.component('form-editor', require('./components/form-editor.vue'));
+Vue.component('form-editor', require('./components/admin/form-editor.vue'));
+Vue.component('all-forms-table', require('./components/admin/all-forms-table.vue'));
 
 /*
     Grading components

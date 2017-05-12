@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "./";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 66);
+/******/ 	return __webpack_require__(__webpack_require__.s = 69);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -1080,7 +1080,7 @@ if (typeof DEBUG !== 'undefined' && DEBUG) {
   ) }
 }
 
-var listToStyles = __webpack_require__(63)
+var listToStyles = __webpack_require__(66)
 
 /*
 type StyleObject = {
@@ -1306,7 +1306,7 @@ function applyToTag (styleElement, obj) {
  * building robust, powerful web applications using Vue and Laravel.
  */
 
-__webpack_require__(39);
+__webpack_require__(40);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -1314,26 +1314,27 @@ __webpack_require__(39);
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-Vue.component('vue-paginate', __webpack_require__(59));
-Vue.component('form-editor', __webpack_require__(46));
+Vue.component('vue-paginate', __webpack_require__(62));
+Vue.component('form-editor', __webpack_require__(47));
+Vue.component('all-forms-table', __webpack_require__(46));
 
 /*
     Grading components
  */
-Vue.component('grading-form', __webpack_require__(47));
-Vue.component('grading-table', __webpack_require__(48));
+Vue.component('grading-form', __webpack_require__(49));
+Vue.component('grading-table', __webpack_require__(50));
 
 /*
     Trivia components
  */
-Vue.component('trivia-form', __webpack_require__(50));
-Vue.component('submissions-table', __webpack_require__(51));
+Vue.component('trivia-form', __webpack_require__(52));
+Vue.component('submissions-table', __webpack_require__(53));
 
 /*
     General Components
  */
-Vue.component('modal', __webpack_require__(49));
-Vue.component('editable-field', __webpack_require__(45));
+Vue.component('modal', __webpack_require__(51));
+Vue.component('editable-field', __webpack_require__(48));
 
 Vue.filter('percentage', function (value, decimals) {
     if (!value) {
@@ -2250,79 +2251,33 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = {
+    mounted: function mounted() {
+        console.log('all-forms table loaded...');
+    },
+    created: function created() {
+        this.internalForms = this.forms;
+    },
+
+    props: ['forms', 'seasons'],
     data: function data() {
         return {
-            beingEdited: false,
-            deleteModalShown: false,
-            internalValue: ''
+            internalForms: {},
+            searchTerm: 'All'
         };
     },
 
-    props: ['value', 'type'],
-    watch: {
-        'beingEdited': function beingEdited() {
-            if (this.beingEdited) {
-                var self = this;
-                Vue.nextTick(function () {
-                    self.$refs.editField.focus();
-                });
-            } else {
-                if (this.internalValue != this.value) this.$emit('input', this.internalValue);
-            }
-        }
-    },
     methods: {
-        remove: function remove() {
-            this.deleteModalShown = false;
-            this.$emit('remove');
+        filteredForms: function filteredForms() {
+            var self = this;
+
+            return this.internalForms.filter(function (form) {
+                if (self.searchTerm === 'All') return true;
+
+                return form.season.title === self.searchTerm;
+            });
         }
-    },
-    created: function created() {
-        this.internalValue = this.value;
-        this.beingEdited = this.value === '';
     }
 };
 
@@ -2506,6 +2461,120 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = {
+    data: function data() {
+        return {
+            beingEdited: false,
+            deleteModalShown: false,
+            internalValue: ''
+        };
+    },
+
+    props: ['value', 'type'],
+    watch: {
+        'beingEdited': function beingEdited() {
+            if (this.beingEdited) {
+                var self = this;
+                Vue.nextTick(function () {
+                    self.$refs.editField.focus();
+                });
+            } else {
+                if (this.internalValue != this.value) this.$emit('input', this.internalValue);
+            }
+        }
+    },
+    methods: {
+        remove: function remove() {
+            this.deleteModalShown = false;
+            this.$emit('remove');
+        }
+    },
+    created: function created() {
+        this.internalValue = this.value;
+        this.beingEdited = this.value === '';
+    }
+};
+
+/***/ }),
+/* 35 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = {
     mounted: function mounted() {
@@ -2539,7 +2608,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 };
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2717,7 +2786,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 };
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2819,7 +2888,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 };
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3024,7 +3093,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 };
 
 /***/ }),
-/* 38 */
+/* 39 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3117,11 +3186,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 };
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
-window._ = __webpack_require__(44);
+window._ = __webpack_require__(45);
 
 /**
  * We'll load jQuery and the Bootstrap jQuery plugin which provides support
@@ -3129,9 +3198,9 @@ window._ = __webpack_require__(44);
  * code may be modified to fit the specific needs of your application.
  */
 
-window.$ = window.jQuery = __webpack_require__(43);
+window.$ = window.jQuery = __webpack_require__(44);
 
-__webpack_require__(40);
+__webpack_require__(41);
 
 /**
  * Vue is a modern JavaScript library for building interactive web interfaces
@@ -3139,8 +3208,8 @@ __webpack_require__(40);
  * and simple, leaving you to focus on building your next great project.
  */
 
-window.Vue = __webpack_require__(64);
-__webpack_require__(60);
+window.Vue = __webpack_require__(67);
+__webpack_require__(63);
 
 /**
  * We'll load the axios HTTP library which allows us to easily issue requests
@@ -3169,7 +3238,7 @@ window.axios.defaults.headers.common = {
 // });
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, exports) {
 
 /*!
@@ -5552,7 +5621,7 @@ if (typeof jQuery === 'undefined') {
 
 
 /***/ }),
-/* 41 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(10)();
@@ -5566,7 +5635,7 @@ exports.push([module.i, "\n.modal-mask {\n    position: fixed;\n    z-index: 999
 
 
 /***/ }),
-/* 42 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(10)();
@@ -5580,7 +5649,7 @@ exports.push([module.i, "\n.editable-field .fa-pencil {\n    margin-left: 5px;\n
 
 
 /***/ }),
-/* 43 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -15807,7 +15876,7 @@ return jQuery;
 
 
 /***/ }),
-/* 44 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, module) {var __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -32896,21 +32965,89 @@ return jQuery;
   }
 }.call(this));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4), __webpack_require__(65)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4), __webpack_require__(68)(module)))
 
 /***/ }),
-/* 45 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
-
-
-/* styles */
-__webpack_require__(62)
 
 var Component = __webpack_require__(1)(
   /* script */
   __webpack_require__(32),
   /* template */
   __webpack_require__(58),
+  /* scopeId */
+  null,
+  /* cssModules */
+  null
+)
+Component.options.__file = "/Users/Jordan/sites/CFBOTrivia/resources/assets/js/components/admin/all-forms-table.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] all-forms-table.vue: functional components are not supported with templates, they should use render functions.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-90e24ae6", Component.options)
+  } else {
+    hotAPI.reload("data-v-90e24ae6", Component.options)
+  }
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 47 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Component = __webpack_require__(1)(
+  /* script */
+  __webpack_require__(33),
+  /* template */
+  __webpack_require__(61),
+  /* scopeId */
+  null,
+  /* cssModules */
+  null
+)
+Component.options.__file = "/Users/Jordan/sites/CFBOTrivia/resources/assets/js/components/admin/form-editor.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] form-editor.vue: functional components are not supported with templates, they should use render functions.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-f81f43c2", Component.options)
+  } else {
+    hotAPI.reload("data-v-f81f43c2", Component.options)
+  }
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 48 */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+/* styles */
+__webpack_require__(65)
+
+var Component = __webpack_require__(1)(
+  /* script */
+  __webpack_require__(34),
+  /* template */
+  __webpack_require__(60),
   /* scopeId */
   null,
   /* cssModules */
@@ -32937,48 +33074,14 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 46 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Component = __webpack_require__(1)(
   /* script */
-  __webpack_require__(33),
+  __webpack_require__(35),
   /* template */
-  __webpack_require__(54),
-  /* scopeId */
-  null,
-  /* cssModules */
-  null
-)
-Component.options.__file = "/Users/Jordan/sites/CFBOTrivia/resources/assets/js/components/form-editor.vue"
-if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
-if (Component.options.functional) {console.error("[vue-loader] form-editor.vue: functional components are not supported with templates, they should use render functions.")}
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-1d93359f", Component.options)
-  } else {
-    hotAPI.reload("data-v-1d93359f", Component.options)
-  }
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
-/* 47 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var Component = __webpack_require__(1)(
-  /* script */
-  __webpack_require__(34),
-  /* template */
-  __webpack_require__(53),
+  __webpack_require__(55),
   /* scopeId */
   null,
   /* cssModules */
@@ -33005,14 +33108,14 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 48 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Component = __webpack_require__(1)(
   /* script */
-  __webpack_require__(35),
+  __webpack_require__(36),
   /* template */
-  __webpack_require__(57),
+  __webpack_require__(59),
   /* scopeId */
   null,
   /* cssModules */
@@ -33039,18 +33142,18 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 49 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
 /* styles */
-__webpack_require__(61)
+__webpack_require__(64)
 
 var Component = __webpack_require__(1)(
   /* script */
-  __webpack_require__(36),
+  __webpack_require__(37),
   /* template */
-  __webpack_require__(56),
+  __webpack_require__(57),
   /* scopeId */
   null,
   /* cssModules */
@@ -33077,14 +33180,14 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 50 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Component = __webpack_require__(1)(
   /* script */
-  __webpack_require__(37),
+  __webpack_require__(38),
   /* template */
-  __webpack_require__(55),
+  __webpack_require__(56),
   /* scopeId */
   null,
   /* cssModules */
@@ -33111,14 +33214,14 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 51 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Component = __webpack_require__(1)(
   /* script */
-  __webpack_require__(38),
+  __webpack_require__(39),
   /* template */
-  __webpack_require__(52),
+  __webpack_require__(54),
   /* scopeId */
   null,
   /* cssModules */
@@ -33145,7 +33248,7 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 52 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -33176,7 +33279,7 @@ if (false) {
 }
 
 /***/ }),
-/* 53 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -33219,159 +33322,7 @@ if (false) {
 }
 
 /***/ }),
-/* 54 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', [(_vm.form.isActive) ? _c('div', [_vm._m(0), _vm._v(" "), _c('br'), _vm._v(" "), _c('span', {
-    staticClass: "clickable",
-    on: {
-      "click": _vm.setInactive
-    }
-  }, [_vm._v("Click "), _c('strong', [_vm._v("Here")]), _vm._v(" to make this form Inactive")])]) : _c('div', [_c('span', [_vm._v("This is an "), _c('strong', {
-    staticClass: "text-danger"
-  }, [_vm._v("Inactive")]), _vm._v(" Form")]), _vm._v(" "), _c('br'), _vm._v(" "), _c('span', {
-    staticClass: "clickable",
-    on: {
-      "click": _vm.setActive
-    }
-  }, [_vm._v("Click "), _c('strong', [_vm._v("Here")]), _vm._v(" to make this form Active")])]), _vm._v(" "), _c('span', {
-    directives: [{
-      name: "show",
-      rawName: "v-show",
-      value: (_vm.saving),
-      expression: "saving"
-    }]
-  }, [_c('i', {
-    staticClass: "fa fa-spin fa-cog"
-  }), _vm._v(" Saving...")]), _vm._v(" "), _c('span', {
-    directives: [{
-      name: "show",
-      rawName: "v-show",
-      value: (_vm.saveSuccessful),
-      expression: "saveSuccessful"
-    }],
-    staticClass: "text-success"
-  }, [_c('i', {
-    staticClass: "fa fa-check"
-  }), _vm._v(" All Changes Saved!")]), _vm._v(" "), _c('span', {
-    directives: [{
-      name: "show",
-      rawName: "v-show",
-      value: (_vm.saveFailed),
-      expression: "saveFailed"
-    }],
-    staticClass: "text-danger"
-  }, [_c('i', {
-    staticClass: "fa fa-exclamation"
-  }), _vm._v(" Save Failed")]), _vm._v(" "), _c('hr'), _vm._v(" "), _c('h4', [_vm._v("Rules Blurb:")]), _vm._v(" "), _c('editable-field', {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: (_vm.internalForm.rules_blurb),
-      expression: "internalForm.rules_blurb"
-    }],
-    attrs: {
-      "type": "textarea"
-    },
-    domProps: {
-      "value": (_vm.internalForm.rules_blurb)
-    },
-    on: {
-      "input": [function($event) {
-        _vm.internalForm.rules_blurb = $event
-      }, function($event) {
-        _vm.setValue(_vm.internalForm.rules_blurb, arguments[0])
-      }]
-    }
-  }), _vm._v(" "), _c('hr'), _vm._v(" "), _c('h4', [_vm._v("Questions:")]), _vm._v(" "), _c('ul', {
-    staticClass: "list-unstyled form-editor"
-  }, [_vm._l((_vm.internalForm.questions), function(question) {
-    return (question.type != 'destroy') ? _c('li', {
-      staticClass: "question"
-    }, [_c('editable-field', {
-      directives: [{
-        name: "model",
-        rawName: "v-model",
-        value: (question.body),
-        expression: "question.body"
-      }],
-      attrs: {
-        "type": "field"
-      },
-      domProps: {
-        "value": (question.body)
-      },
-      on: {
-        "input": [function($event) {
-          question.body = $event
-        }, function($event) {
-          _vm.setValue(question, arguments[0])
-        }],
-        "remove": function($event) {
-          _vm.remove(question)
-        }
-      }
-    }), _vm._v(" "), (question.answers) ? _c('ul', {
-      staticClass: "answer"
-    }, [_vm._l((question.answers), function(answer) {
-      return (answer.type != 'destroy') ? _c('li', [_c('editable-field', {
-        directives: [{
-          name: "model",
-          rawName: "v-model",
-          value: (answer.body),
-          expression: "answer.body"
-        }],
-        attrs: {
-          "type": "field"
-        },
-        domProps: {
-          "value": (answer.body)
-        },
-        on: {
-          "input": [function($event) {
-            answer.body = $event
-          }, function($event) {
-            _vm.setValue(answer, arguments[0])
-          }],
-          "remove": function($event) {
-            _vm.remove(answer)
-          }
-        }
-      })], 1) : _vm._e()
-    }), _vm._v(" "), _c('li', [_c('span', {
-      staticClass: "clickable",
-      on: {
-        "click": function($event) {
-          _vm.addAnswer(question)
-        }
-      }
-    }, [_vm._v("Add Answer "), _c('i', {
-      staticClass: "fa fa-plus-circle"
-    })])])], 2) : _vm._e()], 1) : _vm._e()
-  }), _vm._v(" "), _c('li', [_c('span', {
-    staticClass: "clickable",
-    on: {
-      "click": _vm.addQuestion
-    }
-  }, [_vm._v("Add Question "), _c('i', {
-    staticClass: "fa fa-plus-circle"
-  })])])], 2)], 1)
-},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('span', [_vm._v("This is the "), _c('strong', {
-    staticClass: "text-success"
-  }, [_vm._v("Active")]), _vm._v(" Form")])
-}]}
-module.exports.render._withStripped = true
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-1d93359f", module.exports)
-  }
-}
-
-/***/ }),
-/* 55 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -33500,7 +33451,7 @@ if (false) {
 }
 
 /***/ }),
-/* 56 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -33537,7 +33488,66 @@ if (false) {
 }
 
 /***/ }),
-/* 57 */
+/* 58 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', [_c('div', {
+    staticClass: "form-group"
+  }, [_c('label', [_vm._v("Filter Season:")]), _vm._v(" "), _c('select', {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: (_vm.searchTerm),
+      expression: "searchTerm"
+    }],
+    staticClass: "form-control",
+    on: {
+      "change": function($event) {
+        _vm.searchTerm = Array.prototype.filter.call($event.target.options, function(o) {
+          return o.selected
+        }).map(function(o) {
+          var val = "_value" in o ? o._value : o.value;
+          return val
+        })[0]
+      }
+    }
+  }, [_c('option', {
+    attrs: {
+      "value": "All"
+    }
+  }, [_vm._v("All")]), _vm._v(" "), _vm._l((_vm.seasons), function(season) {
+    return _c('option', {
+      domProps: {
+        "value": season.title
+      }
+    }, [_vm._v(_vm._s(season.title))])
+  })], 2)]), _vm._v(" "), _c('table', {
+    staticClass: "table"
+  }, [_vm._m(0), _vm._v(" "), _c('tbody', _vm._l((_vm.filteredForms(_vm.internalForms)), function(form) {
+    return _c('tr', [_c('td', [_vm._v(_vm._s(form.season.title))]), _vm._v(" "), _c('td', [_vm._v(_vm._s(form.title))]), _vm._v(" "), _c('td', {
+      class: [form.isActive ? 'success' : 'danger']
+    }, [_vm._v(_vm._s(form.isActive ? 'Active' : 'Inactive'))]), _vm._v(" "), _c('td', [_vm._v(_vm._s(form.questions.length))]), _vm._v(" "), _c('td', [_c('a', {
+      attrs: {
+        "href": '/admin/edit/' + form.id
+      }
+    }, [_c('i', {
+      staticClass: "fa fa-edit clickable"
+    })])])])
+  }))])])
+},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('thead', [_c('tr', [_c('th', [_vm._v("Season")]), _vm._v(" "), _c('th', [_vm._v("Name")]), _vm._v(" "), _c('th', [_vm._v("Active")]), _vm._v(" "), _c('th', [_vm._v("Questions")]), _vm._v(" "), _c('th', [_vm._v("Edit")])])])
+}]}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-hot-reload-api").rerender("data-v-90e24ae6", module.exports)
+  }
+}
+
+/***/ }),
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -33719,7 +33729,7 @@ if (false) {
 }
 
 /***/ }),
-/* 58 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -33860,7 +33870,159 @@ if (false) {
 }
 
 /***/ }),
-/* 59 */
+/* 61 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', [(_vm.form.isActive) ? _c('div', [_vm._m(0), _vm._v(" "), _c('br'), _vm._v(" "), _c('span', {
+    staticClass: "clickable",
+    on: {
+      "click": _vm.setInactive
+    }
+  }, [_vm._v("Click "), _c('strong', [_vm._v("Here")]), _vm._v(" to make this form Inactive")])]) : _c('div', [_c('span', [_vm._v("This is an "), _c('strong', {
+    staticClass: "text-danger"
+  }, [_vm._v("Inactive")]), _vm._v(" Form")]), _vm._v(" "), _c('br'), _vm._v(" "), _c('span', {
+    staticClass: "clickable",
+    on: {
+      "click": _vm.setActive
+    }
+  }, [_vm._v("Click "), _c('strong', [_vm._v("Here")]), _vm._v(" to make this form Active")])]), _vm._v(" "), _c('span', {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: (_vm.saving),
+      expression: "saving"
+    }]
+  }, [_c('i', {
+    staticClass: "fa fa-spin fa-cog"
+  }), _vm._v(" Saving...")]), _vm._v(" "), _c('span', {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: (_vm.saveSuccessful),
+      expression: "saveSuccessful"
+    }],
+    staticClass: "text-success"
+  }, [_c('i', {
+    staticClass: "fa fa-check"
+  }), _vm._v(" All Changes Saved!")]), _vm._v(" "), _c('span', {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: (_vm.saveFailed),
+      expression: "saveFailed"
+    }],
+    staticClass: "text-danger"
+  }, [_c('i', {
+    staticClass: "fa fa-exclamation"
+  }), _vm._v(" Save Failed")]), _vm._v(" "), _c('hr'), _vm._v(" "), _c('h4', [_vm._v("Rules Blurb:")]), _vm._v(" "), _c('editable-field', {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: (_vm.internalForm.rules_blurb),
+      expression: "internalForm.rules_blurb"
+    }],
+    attrs: {
+      "type": "textarea"
+    },
+    domProps: {
+      "value": (_vm.internalForm.rules_blurb)
+    },
+    on: {
+      "input": [function($event) {
+        _vm.internalForm.rules_blurb = $event
+      }, function($event) {
+        _vm.setValue(_vm.internalForm.rules_blurb, arguments[0])
+      }]
+    }
+  }), _vm._v(" "), _c('hr'), _vm._v(" "), _c('h4', [_vm._v("Questions:")]), _vm._v(" "), _c('ul', {
+    staticClass: "list-unstyled form-editor"
+  }, [_vm._l((_vm.internalForm.questions), function(question) {
+    return (question.type != 'destroy') ? _c('li', {
+      staticClass: "question"
+    }, [_c('editable-field', {
+      directives: [{
+        name: "model",
+        rawName: "v-model",
+        value: (question.body),
+        expression: "question.body"
+      }],
+      attrs: {
+        "type": "field"
+      },
+      domProps: {
+        "value": (question.body)
+      },
+      on: {
+        "input": [function($event) {
+          question.body = $event
+        }, function($event) {
+          _vm.setValue(question, arguments[0])
+        }],
+        "remove": function($event) {
+          _vm.remove(question)
+        }
+      }
+    }), _vm._v(" "), (question.answers) ? _c('ul', {
+      staticClass: "answer"
+    }, [_vm._l((question.answers), function(answer) {
+      return (answer.type != 'destroy') ? _c('li', [_c('editable-field', {
+        directives: [{
+          name: "model",
+          rawName: "v-model",
+          value: (answer.body),
+          expression: "answer.body"
+        }],
+        attrs: {
+          "type": "field"
+        },
+        domProps: {
+          "value": (answer.body)
+        },
+        on: {
+          "input": [function($event) {
+            answer.body = $event
+          }, function($event) {
+            _vm.setValue(answer, arguments[0])
+          }],
+          "remove": function($event) {
+            _vm.remove(answer)
+          }
+        }
+      })], 1) : _vm._e()
+    }), _vm._v(" "), _c('li', [_c('span', {
+      staticClass: "clickable",
+      on: {
+        "click": function($event) {
+          _vm.addAnswer(question)
+        }
+      }
+    }, [_vm._v("Add Answer "), _c('i', {
+      staticClass: "fa fa-plus-circle"
+    })])])], 2) : _vm._e()], 1) : _vm._e()
+  }), _vm._v(" "), _c('li', [_c('span', {
+    staticClass: "clickable",
+    on: {
+      "click": _vm.addQuestion
+    }
+  }, [_vm._v("Add Question "), _c('i', {
+    staticClass: "fa fa-plus-circle"
+  })])])], 2)], 1)
+},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('span', [_vm._v("This is the "), _c('strong', {
+    staticClass: "text-success"
+  }, [_vm._v("Active")]), _vm._v(" Form")])
+}]}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-hot-reload-api").rerender("data-v-f81f43c2", module.exports)
+  }
+}
+
+/***/ }),
+/* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/**
@@ -40117,7 +40279,7 @@ if (false) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ }),
-/* 60 */
+/* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -42404,13 +42566,13 @@ module.exports = VueRouter;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ }),
-/* 61 */
+/* 64 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(41);
+var content = __webpack_require__(42);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
@@ -42430,13 +42592,13 @@ if(false) {
 }
 
 /***/ }),
-/* 62 */
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(42);
+var content = __webpack_require__(43);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
@@ -42456,7 +42618,7 @@ if(false) {
 }
 
 /***/ }),
-/* 63 */
+/* 66 */
 /***/ (function(module, exports) {
 
 /**
@@ -42489,7 +42651,7 @@ module.exports = function listToStyles (parentId, list) {
 
 
 /***/ }),
-/* 64 */
+/* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -51065,7 +51227,7 @@ module.exports = Vue$3;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2), __webpack_require__(4)))
 
 /***/ }),
-/* 65 */
+/* 68 */
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -51093,7 +51255,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 66 */
+/* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(12);
