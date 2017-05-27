@@ -37,7 +37,14 @@
             <div class="collapse navbar-collapse" id="myNavbar">
                 <ul class="nav navbar-nav">
                     <li><a href="/admin">All</a></li>
-                    <li><a href="/admin/newForm">New</a></li>
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" id="newDropdownButton">New<span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="/admin/newForm">Form</a></li>
+                            <li><a href="/admin/newSeason">Season</a></li>
+                        </ul>
+                    </li>
                     <li><a href="/admin/grading">Grading</a></li>
                     <li><a href="/logout">Logout <i class="fa fa-sign-out" title="Logout"></i></a></li>
                 </ul>

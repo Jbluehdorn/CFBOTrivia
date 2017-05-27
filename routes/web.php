@@ -25,9 +25,11 @@ Route::get('/ResetSubmissions', 'TriviaController@ResetSubmissions');
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'CheckAdmin']], function() {
     Route::get('/', 'AdminController@index');
     Route::get('/newForm', 'AdminController@newForm');
+    Route::get('/newSeason', 'AdminController@newSeason');
     Route::get('/edit/{id}', 'AdminController@editForm');
 
     Route::post('/newForm', 'AdminController@createForm');
+    Route::post('/newSeason', 'AdminController@createSeason');
     Route::post('/setActiveForm', 'AdminController@setActiveForm');
     Route::post('/setInactiveForm', 'AdminController@setInactiveForm');
     Route::post('/saveFormChanges', 'AdminController@saveFormChanges');

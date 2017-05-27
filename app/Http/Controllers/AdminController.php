@@ -33,6 +33,15 @@ class AdminController extends Controller
         return view('admin/new')->with(compact('seasons'));
     }
 
+    /**
+     * View for the new Season page
+     *
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function newSeason() {
+        return view('admin/newSeason');
+    }
+
 
     /**
      * Create a new form and then go to the edit page
@@ -46,6 +55,20 @@ class AdminController extends Controller
         $form->save();
 
         return redirect('/admin/edit/' . $form->id);
+    }
+
+    /**
+     * Create a new season and redirect to the admin homepage
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
+    public function createSeason(Request $request) {
+        $season = new Season($request->all());
+
+        $season->save();
+
+        return redirect('/admin');
     }
 
     /**
