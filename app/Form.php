@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Form extends Model
 {
     protected $fillable = [
-        'title', 'season_id'
+        'title', 'season_id', 'rules_blurb'
     ];
 
     protected $with = [

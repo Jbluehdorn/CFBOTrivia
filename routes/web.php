@@ -11,6 +11,14 @@
 |
 */
 
+Route::get('/test', function() {
+   $form = App\Form::find(2);
+   $season = $form->season;
+
+   dd($season->GetUserTotalScore(Auth::User()));
+});
+
+
 Route::get('/', 'HomeController@index');
 Route::get('/logout', 'HomeController@logout');
 Route::get('/newAccount', function() {
@@ -48,9 +56,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'CheckAdmin']], func
 Route::group(['prefix' => 'trivia', 'middleware' => ['auth']], function() {
     Route::get('/current', 'TriviaController@getCurrentForm');
     Route::get('/getAllUserSubmissions', 'TriviaController@getUserSubmissions');
-    Route::get('/submissions', function() {
-        return view('/trivia/submissions');
-    });
+    Route::get('/getUserTotalScore/{formId}', 'TriviaController@getUserTotalScore');
+    Route::get('/submissions', 'TriviaController@viewSubmissions');
 
     Route::post('/submitForm', 'TriviaController@submitAllAnswers');
 });
@@ -63,4 +70,3 @@ Route::get('/unauthorized', function() {
 });
 
 Auth::routes();
-

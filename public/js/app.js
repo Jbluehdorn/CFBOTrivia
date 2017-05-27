@@ -3132,57 +3132,159 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = {
-    props: ['user'],
-    data: function data() {
-        return {
-            loading: true,
-            submissions: {},
-            test: ['banana', 'airplane', 'soldier']
-        };
-    },
-    created: function created() {
-        this.loadSubmissions();
-    },
+  props: ['user', 'seasons'],
+  data: function data() {
+    return {
+      loading: true,
+      submissions: {},
+      test: ['banana', 'airplane', 'soldier'],
+      searchTerm: '',
+      seasonLoading: false,
+      totalScore: 0,
+      topScoreAmount: null
+    };
+  },
+  created: function created() {
+    this.loadSubmissions();
+    this.getTopScoreAmount();
+  },
 
-    methods: {
-        loadSubmissions: function loadSubmissions() {
-            var _this = this;
-
-            this.loading = true;
-
-            axios.get('/trivia/getAllUserSubmissions').then(function (response) {
-                _this.submissions = response.data;
-                _this.loading = false;
-            }).catch(function (error) {
-                console.log(error);
-                _this.loading = false;
-            });
-        },
-        calcSubmissionTotal: function calcSubmissionTotal(submission) {
-            var total = 0;
-
-            submission.submitted_answers.forEach(function (answer) {
-                if (answer && answer.correct) total++;
-            });
-
-            return total;
-        }
-    },
-    computed: {
-        maxQuestions: function maxQuestions() {
-            var questions = 0;
-
-            this.submissions.forEach(function (submission) {
-                if (submission.submitted_answers.length > questions) {
-                    questions = submission.submitted_answers.length;
-                }
-            });
-
-            return questions;
-        }
+  watch: {
+    searchTerm: function searchTerm() {
+      this.getUserTotalScore();
     }
+  },
+  methods: {
+    loadSubmissions: function loadSubmissions() {
+      var _this = this;
+
+      this.loading = true;
+
+      axios.get('/trivia/getAllUserSubmissions').then(function (response) {
+        _this.submissions = response.data;
+        _this.loading = false;
+      }).catch(function (error) {
+        console.log(error);
+        _this.loading = false;
+      });
+    },
+    calcSubmissionTotal: function calcSubmissionTotal(submission) {
+      var total = 0;
+
+      submission.submitted_answers.forEach(function (answer) {
+        if (answer && answer.correct) total++;
+      });
+
+      submission.scoreTotal = total;
+
+      return total;
+    },
+    calcSubmissionPercentage: function calcSubmissionPercentage(submission) {
+      var total = this.calcSubmissionTotal(submission);
+
+      var percentage = total / submission.submitted_answers.length;
+
+      submission.scorePercentage = percentage;
+
+      return percentage;
+    },
+    calcAverageScore: function calcAverageScore() {
+      return this.totalScore / (this.submissions.length < this.topScoreAmount ? this.submissions.length : this.topScoreAmount);
+    },
+    getUserTotalScore: function getUserTotalScore() {
+      var _this2 = this;
+
+      console.log(this.season);
+      this.seasonLoading = true;
+      var season = this.getSeason();
+      console.log(season);
+
+      axios.get('/trivia/getUserTotalScore/' + season.id).then(function (response) {
+        _this2.totalScore = response.data;
+        _this2.seasonLoading = false;
+      }).catch(function (error) {
+        console.log(error);
+        _this2.seasonLoading = false;
+      });
+    },
+    getTopScoreAmount: function getTopScoreAmount() {
+      var _this3 = this;
+
+      axios.get('/api/getTopScoreAmount').then(function (response) {
+        _this3.topScoreAmount = response.data;
+      }).catch(function (error) {
+        console.log(error);
+      });
+    },
+    filteredSubmissions: function filteredSubmissions() {
+      var self = this;
+
+      return this.submissions.filter(function (submission) {
+        if (self.searchTerm === '') {
+          return true;
+        }
+
+        return self.searchTerm === submission.season;
+      });
+    },
+    getSeason: function getSeason() {
+      var self = this;
+      var foundSeason = {};
+
+      this.seasons.forEach(function (season) {
+        if (season.title == self.searchTerm) {
+          return foundSeason = season;
+        }
+      });
+
+      return foundSeason;
+    }
+  },
+  computed: {
+    maxQuestions: function maxQuestions() {
+      var questions = 0;
+
+      this.submissions.forEach(function (submission) {
+        if (submission.submitted_answers.length > questions) {
+          questions = submission.submitted_answers.length;
+        }
+      });
+
+      return questions;
+    }
+  }
 };
 
 /***/ }),
@@ -33258,17 +33360,62 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "fa fa-cog fa-spin loading-large"
   })]) : (!_vm.submissions.length) ? _c('div', [_c('h4', [_vm._v("No submissions yet!")])]) : _c('div', {
     staticClass: "table-responsive"
-  }, [_c('table', {
+  }, [_c('div', {
+    staticClass: "form-group"
+  }, [_c('label', [_vm._v("Season")]), _vm._v(" "), _c('select', {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: (_vm.searchTerm),
+      expression: "searchTerm"
+    }],
+    staticClass: "form-control",
+    on: {
+      "change": function($event) {
+        _vm.searchTerm = Array.prototype.filter.call($event.target.options, function(o) {
+          return o.selected
+        }).map(function(o) {
+          var val = "_value" in o ? o._value : o.value;
+          return val
+        })[0]
+      }
+    }
+  }, [_c('option', {
+    attrs: {
+      "value": ""
+    }
+  }, [_vm._v("All")]), _vm._v(" "), _vm._l((_vm.seasons), function(season) {
+    return _c('option', {
+      domProps: {
+        "value": season.title
+      }
+    }, [_vm._v(_vm._s(season.title))])
+  })], 2)]), _vm._v(" "), _c('table', {
     staticClass: "table"
-  }, [_c('thead', [_c('th', [_vm._v("Question")]), _vm._v(" "), _vm._l((_vm.maxQuestions), function(index) {
+  }, [_c('thead', [_c('tr', [_c('th', [_vm._v("Season")]), _vm._v(" "), _c('th', [_vm._v("Question")]), _vm._v(" "), _vm._l((_vm.maxQuestions), function(index) {
     return _c('th', [_vm._v(_vm._s(index))])
-  }), _vm._v(" "), _c('th', [_vm._v("Total")])], 2), _vm._v(" "), _c('tbody', _vm._l((_vm.submissions), function(submission) {
-    return _c('tr', [_c('td', [_vm._v(_vm._s(submission.form_title))]), _vm._v(" "), _vm._l((_vm.maxQuestions), function(index) {
+  }), _vm._v(" "), _c('th', [_vm._v("Total")]), _vm._v(" "), _c('th', [_vm._v("Percentage")])], 2)]), _vm._v(" "), _c('tbody', _vm._l((_vm.filteredSubmissions(_vm.submissions)), function(submission) {
+    return _c('tr', [_c('td', [_vm._v(_vm._s(submission.season))]), _vm._v(" "), _c('td', [_vm._v(_vm._s(submission.form_title))]), _vm._v(" "), _vm._l((_vm.maxQuestions), function(index) {
       return _c('td', {
         class: submission.submitted_answers[index - 1] != null ? (submission.submitted_answers[index - 1].correct ? 'table-success' : 'table-danger') : 'table-danger'
-      }, [(submission.submitted_answers[index - 1] != null) ? _c('span', [_vm._v("\n                        " + _vm._s(submission.submitted_answers[index - 1].body) + "\n                    ")]) : _c('span', [_vm._v("\n                        No answer\n                    ")])])
-    }), _vm._v(" "), _c('td', [_vm._v(_vm._s(_vm.calcSubmissionTotal(submission)))])], 2)
-  }))])])])
+      }, [(submission.submitted_answers[index - 1] != null) ? _c('span', [_vm._v("\n              " + _vm._s(submission.submitted_answers[index - 1].body) + "\n            ")]) : _vm._e()])
+    }), _vm._v(" "), _c('td', [_vm._v(_vm._s(_vm.calcSubmissionTotal(submission)))]), _vm._v(" "), _c('td', {
+      staticClass: "text-right"
+    }, [_vm._v(_vm._s(_vm._f("percentage")(_vm.calcSubmissionPercentage(submission))))])], 2)
+  }))]), _vm._v(" "), (_vm.seasonLoading) ? _c('div', {
+    staticClass: "align-center"
+  }, [_c('i', {
+    staticClass: "fa fa-cog fa-spin loading-medium"
+  })]) : _c('div', {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: (_vm.searchTerm != ''),
+      expression: "searchTerm != ''"
+    }]
+  }, [_c('h4', [_vm._v("Season " + _vm._s(_vm.searchTerm))]), _vm._v(" "), _c('table', {
+    staticClass: "table"
+  }, [_c('thead', [_c('tr', [_c('th', [_vm._v("Top " + _vm._s(_vm.topScoreAmount) + " Scores")]), _vm._v(" "), _c('th', [_vm._v("Average Score")])])]), _vm._v(" "), _c('tbody', [_c('tr', [_c('td', [_vm._v(_vm._s(_vm.totalScore))]), _vm._v(" "), _c('td', [_vm._v(_vm._s(_vm.calcAverageScore()))])])])])])])])
 },staticRenderFns: []}
 module.exports.render._withStripped = true
 if (false) {
