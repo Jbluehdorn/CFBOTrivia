@@ -1315,7 +1315,8 @@ __webpack_require__(40);
  */
 
 Vue.component('vue-paginate', __webpack_require__(62));
-Vue.component('form-editor', __webpack_require__(83));
+Vue.component('form-editor', __webpack_require__(47));
+Vue.component('all-forms-table', __webpack_require__(46));
 
 /*
     Grading components
@@ -2252,6 +2253,204 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+
+/* harmony default export */ __webpack_exports__["default"] = {
+    mounted: function mounted() {
+        console.log('all-forms table loaded...');
+    },
+    created: function created() {
+        this.internalForms = this.forms;
+    },
+
+    props: ['forms', 'seasons'],
+    data: function data() {
+        return {
+            internalForms: {},
+            searchTerm: 'All'
+        };
+    },
+
+    methods: {
+        filteredForms: function filteredForms() {
+            var self = this;
+
+            return this.internalForms.filter(function (form) {
+                if (self.searchTerm === 'All') return true;
+
+                return form.season.title === self.searchTerm;
+            });
+        }
+    }
+};
+
+/***/ }),
+/* 35 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = {
+    mounted: function mounted() {
+        console.log('form-editor component initialized');
+    },
+    created: function created() {
+        this.internalForm = this.form;
+        this.resetForm();
+        this.created = true;
+    },
+
+    props: ['form'],
+    data: function data() {
+        return {
+            internalForm: {},
+            saving: false,
+            saveSuccessful: false,
+            saveFailed: false,
+            created: false
+        };
+    },
+
+    methods: {
+        addAnswer: function addAnswer(question) {
+            question.answers.push({ type: 'new', body: '' });
+        },
+        addQuestion: function addQuestion() {
+            this.internalForm.questions.push({ answers: [], type: 'new', body: '' });
+        },
+        remove: function remove(entry) {
+            entry.type = 'destroy';
+            this.saveForm();
+            this.$forceUpdate();
+        },
+        setValue: function setValue(entry, value) {
+            if ((typeof entry === 'undefined' ? 'undefined' : _typeof(entry)) !== 'object') {
+                entry = value;
+            } else {
+                entry.body = value;
+            }
+            this.saveForm();
+        },
+        setActive: function setActive() {
+            var _this = this;
+
+            axios.post('/admin/setActiveForm', {
+                formId: this.internalForm.id
+            }).then(function (response) {
+                _this.internalForm.isActive = true;
+                _this.$forceUpdate();
+            }).catch(function (error) {
+                console.log(error);
+            });
+        },
+        setInactive: function setInactive() {
+            var _this2 = this;
+
+            axios.post('/admin/setInactiveForm', {
+                formId: this.internalForm.id
+            }).then(function (response) {
+                _this2.internalForm.isActive = false;
+                _this2.$forceUpdate();
+            }).catch(function (error) {
+                console.log(error);
+            });
+        },
+        saveForm: function saveForm() {
+            var _this3 = this;
+
+            var self = this;
+            this.saving = true;
+            this.saveSuccessful = false;
+            this.saveFailed = false;
+            axios.post('/admin/saveFormChanges', {
+                form: this.internalForm
+            }).then(function (response) {
+                _this3.saving = false;
+                _this3.saveSuccessful = true;
+
+                setTimeout(function () {
+                    self.saveSuccessful = false;
+                }, 3000);
+                _this3.resetForm();
+                console.log(response);
+            }).catch(function (error) {
+                _this3.saving = false;
+                _this3.saveFailed = true;
+                setTimeout(function () {
+                    self.saveFailed = false;
+                }, 3000);
+                console.log(error);
+            });
+        },
+
+        //Return the form to update state
+        resetForm: function resetForm() {
+            this.internalForm.questions.forEach(function (question) {
+                if (question.type !== 'destroy' && question.body !== '') question.type = 'update';
+                question.answers.forEach(function (answer) {
+                    if (answer.type !== 'destroy' && answer.body !== '') answer.type = 'update';
+                });
+            });
+        }
+    }
+};
+
+/***/ }),
+/* 34 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -2909,57 +3108,159 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = {
-    props: ['user'],
-    data: function data() {
-        return {
-            loading: true,
-            submissions: {},
-            test: ['banana', 'airplane', 'soldier']
-        };
-    },
-    created: function created() {
-        this.loadSubmissions();
-    },
+  props: ['user', 'seasons'],
+  data: function data() {
+    return {
+      loading: true,
+      submissions: {},
+      test: ['banana', 'airplane', 'soldier'],
+      searchTerm: '',
+      seasonLoading: false,
+      totalScore: 0,
+      topScoreAmount: null
+    };
+  },
+  created: function created() {
+    this.loadSubmissions();
+    this.getTopScoreAmount();
+  },
 
-    methods: {
-        loadSubmissions: function loadSubmissions() {
-            var _this = this;
-
-            this.loading = true;
-
-            axios.get('/trivia/getAllUserSubmissions').then(function (response) {
-                _this.submissions = response.data;
-                _this.loading = false;
-            }).catch(function (error) {
-                console.log(error);
-                _this.loading = false;
-            });
-        },
-        calcSubmissionTotal: function calcSubmissionTotal(submission) {
-            var total = 0;
-
-            submission.submitted_answers.forEach(function (answer) {
-                if (answer && answer.correct) total++;
-            });
-
-            return total;
-        }
-    },
-    computed: {
-        maxQuestions: function maxQuestions() {
-            var questions = 0;
-
-            this.submissions.forEach(function (submission) {
-                if (submission.submitted_answers.length > questions) {
-                    questions = submission.submitted_answers.length;
-                }
-            });
-
-            return questions;
-        }
+  watch: {
+    searchTerm: function searchTerm() {
+      this.getUserTotalScore();
     }
+  },
+  methods: {
+    loadSubmissions: function loadSubmissions() {
+      var _this = this;
+
+      this.loading = true;
+
+      axios.get('/trivia/getAllUserSubmissions').then(function (response) {
+        _this.submissions = response.data;
+        _this.loading = false;
+      }).catch(function (error) {
+        console.log(error);
+        _this.loading = false;
+      });
+    },
+    calcSubmissionTotal: function calcSubmissionTotal(submission) {
+      var total = 0;
+
+      submission.submitted_answers.forEach(function (answer) {
+        if (answer && answer.correct) total++;
+      });
+
+      submission.scoreTotal = total;
+
+      return total;
+    },
+    calcSubmissionPercentage: function calcSubmissionPercentage(submission) {
+      var total = this.calcSubmissionTotal(submission);
+
+      var percentage = total / submission.submitted_answers.length;
+
+      submission.scorePercentage = percentage;
+
+      return percentage;
+    },
+    calcAverageScore: function calcAverageScore() {
+      return this.totalScore / (this.submissions.length < this.topScoreAmount ? this.submissions.length : this.topScoreAmount);
+    },
+    getUserTotalScore: function getUserTotalScore() {
+      var _this2 = this;
+
+      console.log(this.season);
+      this.seasonLoading = true;
+      var season = this.getSeason();
+      console.log(season);
+
+      axios.get('/trivia/getUserTotalScore/' + season.id).then(function (response) {
+        _this2.totalScore = response.data;
+        _this2.seasonLoading = false;
+      }).catch(function (error) {
+        console.log(error);
+        _this2.seasonLoading = false;
+      });
+    },
+    getTopScoreAmount: function getTopScoreAmount() {
+      var _this3 = this;
+
+      axios.get('/api/getTopScoreAmount').then(function (response) {
+        _this3.topScoreAmount = response.data;
+      }).catch(function (error) {
+        console.log(error);
+      });
+    },
+    filteredSubmissions: function filteredSubmissions() {
+      var self = this;
+
+      return this.submissions.filter(function (submission) {
+        if (self.searchTerm === '') {
+          return true;
+        }
+
+        return self.searchTerm === submission.season;
+      });
+    },
+    getSeason: function getSeason() {
+      var self = this;
+      var foundSeason = {};
+
+      this.seasons.forEach(function (season) {
+        if (season.title == self.searchTerm) {
+          return foundSeason = season;
+        }
+      });
+
+      return foundSeason;
+    }
+  },
+  computed: {
+    maxQuestions: function maxQuestions() {
+      var questions = 0;
+
+      this.submissions.forEach(function (submission) {
+        if (submission.submitted_answers.length > questions) {
+          questions = submission.submitted_answers.length;
+        }
+      });
+
+      return questions;
+    }
+  }
 };
 
 /***/ }),
@@ -32745,8 +33046,74 @@ return jQuery;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4), __webpack_require__(68)(module)))
 
 /***/ }),
-/* 46 */,
-/* 47 */,
+/* 46 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Component = __webpack_require__(1)(
+  /* script */
+  __webpack_require__(34),
+  /* template */
+  __webpack_require__(60),
+  /* scopeId */
+  null,
+  /* cssModules */
+  null
+)
+Component.options.__file = "/Users/Jordan/sites/CFBOTrivia/resources/assets/js/components/admin/all-forms-table.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] all-forms-table.vue: functional components are not supported with templates, they should use render functions.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-90e24ae6", Component.options)
+  } else {
+    hotAPI.reload("data-v-90e24ae6", Component.options)
+  }
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 47 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Component = __webpack_require__(1)(
+  /* script */
+  __webpack_require__(35),
+  /* template */
+  __webpack_require__(61),
+  /* scopeId */
+  null,
+  /* cssModules */
+  null
+)
+Component.options.__file = "/Users/Jordan/sites/CFBOTrivia/resources/assets/js/components/admin/form-editor.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] form-editor.vue: functional components are not supported with templates, they should use render functions.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-f81f43c2", Component.options)
+  } else {
+    hotAPI.reload("data-v-f81f43c2", Component.options)
+  }
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
 /* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -32969,17 +33336,62 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "fa fa-cog fa-spin loading-large"
   })]) : (!_vm.submissions.length) ? _c('div', [_c('h4', [_vm._v("No submissions yet!")])]) : _c('div', {
     staticClass: "table-responsive"
-  }, [_c('table', {
+  }, [_c('div', {
+    staticClass: "form-group"
+  }, [_c('label', [_vm._v("Season")]), _vm._v(" "), _c('select', {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: (_vm.searchTerm),
+      expression: "searchTerm"
+    }],
+    staticClass: "form-control",
+    on: {
+      "change": function($event) {
+        _vm.searchTerm = Array.prototype.filter.call($event.target.options, function(o) {
+          return o.selected
+        }).map(function(o) {
+          var val = "_value" in o ? o._value : o.value;
+          return val
+        })[0]
+      }
+    }
+  }, [_c('option', {
+    attrs: {
+      "value": ""
+    }
+  }, [_vm._v("All")]), _vm._v(" "), _vm._l((_vm.seasons), function(season) {
+    return _c('option', {
+      domProps: {
+        "value": season.title
+      }
+    }, [_vm._v(_vm._s(season.title))])
+  })], 2)]), _vm._v(" "), _c('table', {
     staticClass: "table"
-  }, [_c('thead', [_c('th', [_vm._v("Question")]), _vm._v(" "), _vm._l((_vm.maxQuestions), function(index) {
+  }, [_c('thead', [_c('tr', [_c('th', [_vm._v("Season")]), _vm._v(" "), _c('th', [_vm._v("Question")]), _vm._v(" "), _vm._l((_vm.maxQuestions), function(index) {
     return _c('th', [_vm._v(_vm._s(index))])
-  }), _vm._v(" "), _c('th', [_vm._v("Total")])], 2), _vm._v(" "), _c('tbody', _vm._l((_vm.submissions), function(submission) {
-    return _c('tr', [_c('td', [_vm._v(_vm._s(submission.form_title))]), _vm._v(" "), _vm._l((_vm.maxQuestions), function(index) {
+  }), _vm._v(" "), _c('th', [_vm._v("Total")]), _vm._v(" "), _c('th', [_vm._v("Percentage")])], 2)]), _vm._v(" "), _c('tbody', _vm._l((_vm.filteredSubmissions(_vm.submissions)), function(submission) {
+    return _c('tr', [_c('td', [_vm._v(_vm._s(submission.season))]), _vm._v(" "), _c('td', [_vm._v(_vm._s(submission.form_title))]), _vm._v(" "), _vm._l((_vm.maxQuestions), function(index) {
       return _c('td', {
         class: submission.submitted_answers[index - 1] != null ? (submission.submitted_answers[index - 1].correct ? 'table-success' : 'table-danger') : 'table-danger'
-      }, [(submission.submitted_answers[index - 1] != null) ? _c('span', [_vm._v("\n                        " + _vm._s(submission.submitted_answers[index - 1].body) + "\n                    ")]) : _c('span', [_vm._v("\n                        No answer\n                    ")])])
-    }), _vm._v(" "), _c('td', [_vm._v(_vm._s(_vm.calcSubmissionTotal(submission)))])], 2)
-  }))])])])
+      }, [(submission.submitted_answers[index - 1] != null) ? _c('span', [_vm._v("\n              " + _vm._s(submission.submitted_answers[index - 1].body) + "\n            ")]) : _vm._e()])
+    }), _vm._v(" "), _c('td', [_vm._v(_vm._s(_vm.calcSubmissionTotal(submission)))]), _vm._v(" "), _c('td', {
+      staticClass: "text-right"
+    }, [_vm._v(_vm._s(_vm._f("percentage")(_vm.calcSubmissionPercentage(submission))))])], 2)
+  }))]), _vm._v(" "), (_vm.seasonLoading) ? _c('div', {
+    staticClass: "align-center"
+  }, [_c('i', {
+    staticClass: "fa fa-cog fa-spin loading-medium"
+  })]) : _c('div', {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: (_vm.searchTerm != ''),
+      expression: "searchTerm != ''"
+    }]
+  }, [_c('h4', [_vm._v("Season " + _vm._s(_vm.searchTerm))]), _vm._v(" "), _c('table', {
+    staticClass: "table"
+  }, [_c('thead', [_c('tr', [_c('th', [_vm._v("Top " + _vm._s(_vm.topScoreAmount) + " Scores")]), _vm._v(" "), _c('th', [_vm._v("Average Score")])])]), _vm._v(" "), _c('tbody', [_c('tr', [_c('td', [_vm._v(_vm._s(_vm.totalScore))]), _vm._v(" "), _c('td', [_vm._v(_vm._s(_vm.calcAverageScore()))])])])])])])])
 },staticRenderFns: []}
 module.exports.render._withStripped = true
 if (false) {
@@ -33199,7 +33611,65 @@ if (false) {
 }
 
 /***/ }),
-/* 58 */,
+/* 58 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', [_c('div', {
+    staticClass: "form-group"
+  }, [_c('label', [_vm._v("Filter Season:")]), _vm._v(" "), _c('select', {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: (_vm.searchTerm),
+      expression: "searchTerm"
+    }],
+    staticClass: "form-control",
+    on: {
+      "change": function($event) {
+        _vm.searchTerm = Array.prototype.filter.call($event.target.options, function(o) {
+          return o.selected
+        }).map(function(o) {
+          var val = "_value" in o ? o._value : o.value;
+          return val
+        })[0]
+      }
+    }
+  }, [_c('option', {
+    attrs: {
+      "value": "All"
+    }
+  }, [_vm._v("All")]), _vm._v(" "), _vm._l((_vm.seasons), function(season) {
+    return _c('option', {
+      domProps: {
+        "value": season.title
+      }
+    }, [_vm._v(_vm._s(season.title))])
+  })], 2)]), _vm._v(" "), _c('table', {
+    staticClass: "table"
+  }, [_vm._m(0), _vm._v(" "), _c('tbody', _vm._l((_vm.filteredForms(_vm.internalForms)), function(form) {
+    return _c('tr', [_c('td', [_vm._v(_vm._s(form.season.title))]), _vm._v(" "), _c('td', [_vm._v(_vm._s(form.title))]), _vm._v(" "), _c('td', {
+      class: [form.isActive ? 'success' : 'danger']
+    }, [_vm._v(_vm._s(form.isActive ? 'Active' : 'Inactive'))]), _vm._v(" "), _c('td', [_vm._v(_vm._s(form.questions.length))]), _vm._v(" "), _c('td', [_c('a', {
+      attrs: {
+        "href": '/admin/edit/' + form.id
+      }
+    }, [_c('i', {
+      staticClass: "fa fa-edit clickable"
+    })])])])
+  }))])])
+},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('thead', [_c('tr', [_c('th', [_vm._v("Season")]), _vm._v(" "), _c('th', [_vm._v("Name")]), _vm._v(" "), _c('th', [_vm._v("Active")]), _vm._v(" "), _c('th', [_vm._v("Questions")]), _vm._v(" "), _c('th', [_vm._v("Edit")])])])
+}]}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-hot-reload-api").rerender("data-v-90e24ae6", module.exports)
+  }
+}
+
+/***/ }),
 /* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -33523,7 +33993,158 @@ if (false) {
 }
 
 /***/ }),
-/* 61 */,
+/* 61 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', [(_vm.form.isActive) ? _c('div', [_vm._m(0), _vm._v(" "), _c('br'), _vm._v(" "), _c('span', {
+    staticClass: "clickable",
+    on: {
+      "click": _vm.setInactive
+    }
+  }, [_vm._v("Click "), _c('strong', [_vm._v("Here")]), _vm._v(" to make this form Inactive")])]) : _c('div', [_c('span', [_vm._v("This is an "), _c('strong', {
+    staticClass: "text-danger"
+  }, [_vm._v("Inactive")]), _vm._v(" Form")]), _vm._v(" "), _c('br'), _vm._v(" "), _c('span', {
+    staticClass: "clickable",
+    on: {
+      "click": _vm.setActive
+    }
+  }, [_vm._v("Click "), _c('strong', [_vm._v("Here")]), _vm._v(" to make this form Active")])]), _vm._v(" "), _c('span', {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: (_vm.saving),
+      expression: "saving"
+    }]
+  }, [_c('i', {
+    staticClass: "fa fa-spin fa-cog"
+  }), _vm._v(" Saving...")]), _vm._v(" "), _c('span', {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: (_vm.saveSuccessful),
+      expression: "saveSuccessful"
+    }],
+    staticClass: "text-success"
+  }, [_c('i', {
+    staticClass: "fa fa-check"
+  }), _vm._v(" All Changes Saved!")]), _vm._v(" "), _c('span', {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: (_vm.saveFailed),
+      expression: "saveFailed"
+    }],
+    staticClass: "text-danger"
+  }, [_c('i', {
+    staticClass: "fa fa-exclamation"
+  }), _vm._v(" Save Failed")]), _vm._v(" "), _c('hr'), _vm._v(" "), _c('h4', [_vm._v("Rules Blurb:")]), _vm._v(" "), _c('editable-field', {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: (_vm.internalForm.rules_blurb),
+      expression: "internalForm.rules_blurb"
+    }],
+    attrs: {
+      "type": "textarea"
+    },
+    domProps: {
+      "value": (_vm.internalForm.rules_blurb)
+    },
+    on: {
+      "input": [function($event) {
+        _vm.internalForm.rules_blurb = $event
+      }, function($event) {
+        _vm.setValue(_vm.internalForm.rules_blurb, arguments[0])
+      }]
+    }
+  }), _vm._v(" "), _c('hr'), _vm._v(" "), _c('h4', [_vm._v("Questions:")]), _vm._v(" "), _c('ul', {
+    staticClass: "list-unstyled form-editor"
+  }, [_vm._l((_vm.internalForm.questions), function(question) {
+    return (question.type != 'destroy') ? _c('li', {
+      staticClass: "question"
+    }, [_c('editable-field', {
+      directives: [{
+        name: "model",
+        rawName: "v-model",
+        value: (question.body),
+        expression: "question.body"
+      }],
+      attrs: {
+        "type": "field"
+      },
+      domProps: {
+        "value": (question.body)
+      },
+      on: {
+        "input": [function($event) {
+          question.body = $event
+        }, function($event) {
+          _vm.setValue(question, arguments[0])
+        }],
+        "remove": function($event) {
+          _vm.remove(question)
+        }
+      }
+    }), _vm._v(" "), (question.answers) ? _c('ul', {
+      staticClass: "answer"
+    }, [_vm._l((question.answers), function(answer) {
+      return (answer.type != 'destroy') ? _c('li', [_c('editable-field', {
+        directives: [{
+          name: "model",
+          rawName: "v-model",
+          value: (answer.body),
+          expression: "answer.body"
+        }],
+        attrs: {
+          "type": "field"
+        },
+        domProps: {
+          "value": (answer.body)
+        },
+        on: {
+          "input": [function($event) {
+            answer.body = $event
+          }, function($event) {
+            _vm.setValue(answer, arguments[0])
+          }],
+          "remove": function($event) {
+            _vm.remove(answer)
+          }
+        }
+      })], 1) : _vm._e()
+    }), _vm._v(" "), _c('li', [_c('span', {
+      staticClass: "clickable",
+      on: {
+        "click": function($event) {
+          _vm.addAnswer(question)
+        }
+      }
+    }, [_vm._v("Add Answer "), _c('i', {
+      staticClass: "fa fa-plus-circle"
+    })])])], 2) : _vm._e()], 1) : _vm._e()
+  }), _vm._v(" "), _c('li', [_c('span', {
+    staticClass: "clickable",
+    on: {
+      "click": _vm.addQuestion
+    }
+  }, [_vm._v("Add Question "), _c('i', {
+    staticClass: "fa fa-plus-circle"
+  })])])], 2)], 1)
+},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('span', [_vm._v("This is the "), _c('strong', {
+    staticClass: "text-success"
+  }, [_vm._v("Active")]), _vm._v(" Form")])
+}]}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-hot-reload-api").rerender("data-v-f81f43c2", module.exports)
+  }
+}
+
+/***/ }),
 /* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 

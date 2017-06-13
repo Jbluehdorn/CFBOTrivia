@@ -11,7 +11,7 @@
                         <h3>{{Auth::User()->name}}</h3>
                     </div>
                     <div class="panel-body">
-                        <submissions-table :user="{{Auth::User()}}"></submissions-table>
+                        <submissions-table :user="{{Auth::User()}}" :seasons="{{$seasons}}"></submissions-table>
                     </div>
                 </div>
             </div>

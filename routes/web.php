@@ -11,6 +11,14 @@
 |
 */
 
+Route::get('/test', function() {
+   $form = App\Form::find(2);
+   $season = $form->season;
+
+   dd($season->getRankings());
+});
+
+
 Route::get('/', 'HomeController@index');
 Route::get('/logout', 'HomeController@logout');
 Route::get('/newAccount', function() {
@@ -25,9 +33,11 @@ Route::get('/ResetSubmissions', 'TriviaController@ResetSubmissions');
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'CheckAdmin']], function() {
     Route::get('/', 'AdminController@index');
     Route::get('/newForm', 'AdminController@newForm');
+    Route::get('/newSeason', 'AdminController@newSeason');
     Route::get('/edit/{id}', 'AdminController@editForm');
 
     Route::post('/newForm', 'AdminController@createForm');
+    Route::post('/newSeason', 'AdminController@createSeason');
     Route::post('/setActiveForm', 'AdminController@setActiveForm');
     Route::post('/setInactiveForm', 'AdminController@setInactiveForm');
     Route::post('/saveFormChanges', 'AdminController@saveFormChanges');
@@ -46,9 +56,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'CheckAdmin']], func
 Route::group(['prefix' => 'trivia', 'middleware' => ['auth']], function() {
     Route::get('/current', 'TriviaController@getCurrentForm');
     Route::get('/getAllUserSubmissions', 'TriviaController@getUserSubmissions');
-    Route::get('/submissions', function() {
-        return view('/trivia/submissions');
-    });
+    Route::get('/getUserTotalScore/{formId}', 'TriviaController@getUserTotalScore');
+    Route::get('/submissions', 'TriviaController@viewSubmissions');
 
     Route::post('/submitForm', 'TriviaController@submitAllAnswers');
 });
@@ -61,4 +70,3 @@ Route::get('/unauthorized', function() {
 });
 
 Auth::routes();
-

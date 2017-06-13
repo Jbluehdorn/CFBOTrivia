@@ -18,3 +18,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::get('/getFormQuestions/{formId}', 'TriviaController@getQuestions');
+Route::get('/getTopScoreAmount', function() {
+  return config('trivia.top_scores_per_season');
+});

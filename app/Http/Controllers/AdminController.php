@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Form;
 use App\Answer;
 use App\Question;
+use App\Season;
 
 class AdminController extends Controller
 {
@@ -16,7 +17,9 @@ class AdminController extends Controller
      */
     public function index() {
         $forms = Form::get();
-        return view('admin/all')->with(compact('forms'));
+        $seasons = Season::get();
+
+        return view('admin/all')->with(compact('forms', 'seasons'));
     }
 
     /**
@@ -25,7 +28,18 @@ class AdminController extends Controller
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function newForm() {
-        return view('admin/new');
+        $seasons = Season::get();
+
+        return view('admin/new')->with(compact('seasons'));
+    }
+
+    /**
+     * View for the new Season page
+     *
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function newSeason() {
+        return view('admin/newSeason');
     }
 
 
@@ -37,9 +51,24 @@ class AdminController extends Controller
      */
     public function createForm(Request $request) {
         $form = new Form($request->all());
+
         $form->save();
 
         return redirect('/admin/edit/' . $form->id);
+    }
+
+    /**
+     * Create a new season and redirect to the admin homepage
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
+    public function createSeason(Request $request) {
+        $season = new Season($request->all());
+
+        $season->save();
+
+        return redirect('/admin');
     }
 
     /**
