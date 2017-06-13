@@ -37,6 +37,19 @@ class Season extends Model
     return $total;
   }
 
+  public function getRankings() {
+    $users = User::get();
+    $usersWithSubmissions = [];
+    $len = count($users);
+
+    foreach($users as $user) {
+      if($user->hasSubmissionsInSeason($this->id))
+        array_push($usersWithSubmissions, $user);
+    }
+
+    return $usersWithSubmissions;
+  }
+
   /**
   * Gets all the scores for a user in a given season
   *

@@ -15,7 +15,7 @@ Route::get('/test', function() {
    $form = App\Form::find(2);
    $season = $form->season;
 
-   dd($season->GetUserTotalScore(Auth::User()));
+   dd($season->getRankings());
 });
 
 
