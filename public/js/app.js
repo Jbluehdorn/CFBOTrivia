@@ -2214,9 +2214,7 @@ module.exports = function spread(callback) {
 
 
 /***/ }),
-/* 32 */,
-/* 33 */,
-/* 34 */
+/* 32 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2284,11 +2282,37 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 };
 
 /***/ }),
-/* 35 */
+/* 33 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -33051,9 +33075,9 @@ return jQuery;
 
 var Component = __webpack_require__(1)(
   /* script */
-  __webpack_require__(34),
+  __webpack_require__(32),
   /* template */
-  __webpack_require__(60),
+  __webpack_require__(58),
   /* scopeId */
   null,
   /* cssModules */
@@ -33085,7 +33109,7 @@ module.exports = Component.exports
 
 var Component = __webpack_require__(1)(
   /* script */
-  __webpack_require__(35),
+  __webpack_require__(33),
   /* template */
   __webpack_require__(61),
   /* scopeId */
@@ -51384,360 +51408,6 @@ module.exports = function(module) {
 __webpack_require__(12);
 module.exports = __webpack_require__(13);
 
-
-/***/ }),
-/* 70 */,
-/* 71 */,
-/* 72 */,
-/* 73 */,
-/* 74 */,
-/* 75 */,
-/* 76 */,
-/* 77 */,
-/* 78 */,
-/* 79 */,
-/* 80 */,
-/* 81 */,
-/* 82 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-/* harmony default export */ __webpack_exports__["default"] = {
-    mounted: function mounted() {
-        console.log('form-editor component initialized');
-    },
-    created: function created() {
-        this.internalForm = this.form;
-        this.resetForm();
-        this.created = true;
-    },
-
-    props: ['form'],
-    data: function data() {
-        return {
-            internalForm: {},
-            saving: false,
-            saveSuccessful: false,
-            saveFailed: false,
-            created: false
-        };
-    },
-
-    methods: {
-        addAnswer: function addAnswer(question) {
-            question.answers.push({ type: 'new', body: '' });
-        },
-        addQuestion: function addQuestion() {
-            this.internalForm.questions.push({ answers: [], type: 'new', body: '' });
-        },
-        remove: function remove(entry) {
-            entry.type = 'destroy';
-            this.saveForm();
-            this.$forceUpdate();
-        },
-        setValue: function setValue(entry, value) {
-            if ((typeof entry === 'undefined' ? 'undefined' : _typeof(entry)) !== 'object') {
-                entry = value;
-            } else {
-                entry.body = value;
-            }
-            this.saveForm();
-        },
-        setActive: function setActive() {
-            var _this = this;
-
-            axios.post('/admin/setActiveForm', {
-                formId: this.internalForm.id
-            }).then(function (response) {
-                _this.internalForm.isActive = true;
-                _this.$forceUpdate();
-            }).catch(function (error) {
-                console.log(error);
-            });
-        },
-        setInactive: function setInactive() {
-            var _this2 = this;
-
-            axios.post('/admin/setInactiveForm', {
-                formId: this.internalForm.id
-            }).then(function (response) {
-                _this2.internalForm.isActive = false;
-                _this2.$forceUpdate();
-            }).catch(function (error) {
-                console.log(error);
-            });
-        },
-        saveForm: function saveForm() {
-            var _this3 = this;
-
-            var self = this;
-            this.saving = true;
-            this.saveSuccessful = false;
-            this.saveFailed = false;
-            axios.post('/admin/saveFormChanges', {
-                form: this.internalForm
-            }).then(function (response) {
-                _this3.saving = false;
-                _this3.saveSuccessful = true;
-
-                setTimeout(function () {
-                    self.saveSuccessful = false;
-                }, 3000);
-                _this3.resetForm();
-                console.log(response);
-            }).catch(function (error) {
-                _this3.saving = false;
-                _this3.saveFailed = true;
-                setTimeout(function () {
-                    self.saveFailed = false;
-                }, 3000);
-                console.log(error);
-            });
-        },
-
-        //Return the form to update state
-        resetForm: function resetForm() {
-            this.internalForm.questions.forEach(function (question) {
-                if (question.type !== 'destroy' && question.body !== '') question.type = 'update';
-                question.answers.forEach(function (answer) {
-                    if (answer.type !== 'destroy' && answer.body !== '') answer.type = 'update';
-                });
-            });
-        }
-    }
-};
-
-/***/ }),
-/* 83 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var Component = __webpack_require__(1)(
-  /* script */
-  __webpack_require__(82),
-  /* template */
-  __webpack_require__(84),
-  /* scopeId */
-  null,
-  /* cssModules */
-  null
-)
-Component.options.__file = "/Users/Jordan/sites/CFBOTrivia/resources/assets/js/components/form-editor.vue"
-if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
-if (Component.options.functional) {console.error("[vue-loader] form-editor.vue: functional components are not supported with templates, they should use render functions.")}
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-1d93359f", Component.options)
-  } else {
-    hotAPI.reload("data-v-1d93359f", Component.options)
-  }
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
-/* 84 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', [(_vm.form.isActive) ? _c('div', [_vm._m(0), _vm._v(" "), _c('br'), _vm._v(" "), _c('span', {
-    staticClass: "clickable",
-    on: {
-      "click": _vm.setInactive
-    }
-  }, [_vm._v("Click "), _c('strong', [_vm._v("Here")]), _vm._v(" to make this form Inactive")])]) : _c('div', [_c('span', [_vm._v("This is an "), _c('strong', {
-    staticClass: "text-danger"
-  }, [_vm._v("Inactive")]), _vm._v(" Form")]), _vm._v(" "), _c('br'), _vm._v(" "), _c('span', {
-    staticClass: "clickable",
-    on: {
-      "click": _vm.setActive
-    }
-  }, [_vm._v("Click "), _c('strong', [_vm._v("Here")]), _vm._v(" to make this form Active")])]), _vm._v(" "), _c('span', {
-    directives: [{
-      name: "show",
-      rawName: "v-show",
-      value: (_vm.saving),
-      expression: "saving"
-    }]
-  }, [_c('i', {
-    staticClass: "fa fa-spin fa-cog"
-  }), _vm._v(" Saving...")]), _vm._v(" "), _c('span', {
-    directives: [{
-      name: "show",
-      rawName: "v-show",
-      value: (_vm.saveSuccessful),
-      expression: "saveSuccessful"
-    }],
-    staticClass: "text-success"
-  }, [_c('i', {
-    staticClass: "fa fa-check"
-  }), _vm._v(" All Changes Saved!")]), _vm._v(" "), _c('span', {
-    directives: [{
-      name: "show",
-      rawName: "v-show",
-      value: (_vm.saveFailed),
-      expression: "saveFailed"
-    }],
-    staticClass: "text-danger"
-  }, [_c('i', {
-    staticClass: "fa fa-exclamation"
-  }), _vm._v(" Save Failed")]), _vm._v(" "), _c('hr'), _vm._v(" "), _c('h4', [_vm._v("Rules Blurb:")]), _vm._v(" "), _c('editable-field', {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: (_vm.internalForm.rules_blurb),
-      expression: "internalForm.rules_blurb"
-    }],
-    attrs: {
-      "type": "textarea"
-    },
-    domProps: {
-      "value": (_vm.internalForm.rules_blurb)
-    },
-    on: {
-      "input": [function($event) {
-        _vm.internalForm.rules_blurb = $event
-      }, function($event) {
-        _vm.setValue(_vm.internalForm.rules_blurb, arguments[0])
-      }]
-    }
-  }), _vm._v(" "), _c('hr'), _vm._v(" "), _c('h4', [_vm._v("Questions:")]), _vm._v(" "), _c('ul', {
-    staticClass: "list-unstyled form-editor"
-  }, [_vm._l((_vm.internalForm.questions), function(question) {
-    return (question.type != 'destroy') ? _c('li', {
-      staticClass: "question"
-    }, [_c('editable-field', {
-      directives: [{
-        name: "model",
-        rawName: "v-model",
-        value: (question.body),
-        expression: "question.body"
-      }],
-      attrs: {
-        "type": "field"
-      },
-      domProps: {
-        "value": (question.body)
-      },
-      on: {
-        "input": [function($event) {
-          question.body = $event
-        }, function($event) {
-          _vm.setValue(question, arguments[0])
-        }],
-        "remove": function($event) {
-          _vm.remove(question)
-        }
-      }
-    }), _vm._v(" "), (question.answers) ? _c('ul', {
-      staticClass: "answer"
-    }, [_vm._l((question.answers), function(answer) {
-      return (answer.type != 'destroy') ? _c('li', [_c('editable-field', {
-        directives: [{
-          name: "model",
-          rawName: "v-model",
-          value: (answer.body),
-          expression: "answer.body"
-        }],
-        attrs: {
-          "type": "field"
-        },
-        domProps: {
-          "value": (answer.body)
-        },
-        on: {
-          "input": [function($event) {
-            answer.body = $event
-          }, function($event) {
-            _vm.setValue(answer, arguments[0])
-          }],
-          "remove": function($event) {
-            _vm.remove(answer)
-          }
-        }
-      })], 1) : _vm._e()
-    }), _vm._v(" "), _c('li', [_c('span', {
-      staticClass: "clickable",
-      on: {
-        "click": function($event) {
-          _vm.addAnswer(question)
-        }
-      }
-    }, [_vm._v("Add Answer "), _c('i', {
-      staticClass: "fa fa-plus-circle"
-    })])])], 2) : _vm._e()], 1) : _vm._e()
-  }), _vm._v(" "), _c('li', [_c('span', {
-    staticClass: "clickable",
-    on: {
-      "click": _vm.addQuestion
-    }
-  }, [_vm._v("Add Question "), _c('i', {
-    staticClass: "fa fa-plus-circle"
-  })])])], 2)], 1)
-},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('span', [_vm._v("This is the "), _c('strong', {
-    staticClass: "text-success"
-  }, [_vm._v("Active")]), _vm._v(" Form")])
-}]}
-module.exports.render._withStripped = true
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-1d93359f", module.exports)
-  }
-}
 
 /***/ })
 /******/ ]);
