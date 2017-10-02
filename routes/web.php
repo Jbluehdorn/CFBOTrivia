@@ -42,6 +42,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'CheckAdmin']], func
     Route::post('/setInactiveForm', 'AdminController@setInactiveForm');
     Route::post('/saveFormChanges', 'AdminController@saveFormChanges');
 
+    Route::get('/reports', 'AdminController@reports');
+
     /*
      * Grading routes
      */

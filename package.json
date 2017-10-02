@@ -13,6 +13,7 @@
     "jquery": "^3.1.1",
     "laravel-mix": "^0.7.2",
     "lodash": "^4.17.4",
+    "sweetalert": "^2.0.4",
     "vue": "^2.1.10",
     "vue-paginate": "^3.4.0",
     "vue-router": "^2.2.0"

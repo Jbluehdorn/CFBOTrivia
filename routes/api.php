@@ -21,3 +21,6 @@ Route::get('/getFormQuestions/{formId}', 'TriviaController@getQuestions');
 Route::get('/getTopScoreAmount', function() {
   return config('trivia.top_scores_per_season');
 });
+
+Route::get('/reports/{seasonId}', 'AdminController@getReports');
+Route::get('/seasons', 'AdminController@getSeasons');

@@ -7,6 +7,7 @@ use App\Form;
 use App\Answer;
 use App\Question;
 use App\Season;
+use App\Services\ReportingService;
 
 class AdminController extends Controller
 {
@@ -42,6 +43,17 @@ class AdminController extends Controller
         return view('admin/newSeason');
     }
 
+    public function reports() {
+        return view('admin/reports');
+    }
+
+    public function getReports(ReportingService $reportingService, $seasonId) {
+        return $reportingService->getReports($seasonId);
+    }
+
+    public function getSeasons() {
+        return json_encode(Season::get());
+    }
 
     /**
      * Create a new form and then go to the edit page

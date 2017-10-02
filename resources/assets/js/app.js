@@ -23,6 +23,11 @@ Vue.component('grading-form', require('./components/grading/grading-form.vue'));
 Vue.component('grading-table', require('./components/grading/grading-table.vue'));
 
 /*
+    Admin components
+*/
+Vue.component('reports', require('./components/admin/reports.vue'));
+
+/*
     Trivia components
  */
 Vue.component('trivia-form', require('./components/trivia_form/form.vue'));

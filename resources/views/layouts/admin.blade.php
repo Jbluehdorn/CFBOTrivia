@@ -46,6 +46,7 @@
                         </ul>
                     </li>
                     <li><a href="/admin/grading">Grading</a></li>
+                    <li><a href="/admin/reports">Reports</a></li>
                     <li><a href="/logout">Logout <i class="fa fa-sign-out" title="Logout"></i></a></li>
                 </ul>
             </div>
