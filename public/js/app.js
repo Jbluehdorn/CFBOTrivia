@@ -2490,6 +2490,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
 
 
 
@@ -33804,7 +33808,11 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         "value": season
       }
     }, [_vm._v(_vm._s(season.title))])
-  }))])]), _vm._v(" "), _c('hr'), _vm._v(" "), _c('table', {
+  }))])]), _vm._v(" "), _c('hr'), _vm._v(" "), (_vm.reportsLoading) ? _c('div', {
+    staticClass: "align-center"
+  }, [_c('i', {
+    staticClass: "fa fa-spin fa-spinner loading-small"
+  })]) : _c('table', {
     staticClass: "table table-responsive"
   }, [_c('thead', [_c('tr', [_c('th', [_vm._v("Username")]), _vm._v(" "), _c('th', [_vm._v("Score")])])]), _vm._v(" "), _c('tbody', _vm._l((_vm.orderedReports), function(report) {
     return _c('tr', {

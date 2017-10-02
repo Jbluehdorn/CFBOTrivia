@@ -18,7 +18,11 @@
 
           <hr>
 
-          <table class="table table-responsive">
+          <div class="align-center" v-if="reportsLoading">
+              <i class="fa fa-spin fa-spinner loading-small"></i>
+          </div>
+
+          <table class="table table-responsive" v-else>
               <thead>
                   <tr>
                       <th>Username</th>
