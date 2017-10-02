@@ -2532,6 +2532,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         loadReports: function loadReports() {
             var _this2 = this;
 
+            this.reports = null;
             this.reportsLoading = true;
 
             axios.get('/api/reports/' + this.selectedSeason.id).then(function (response) {

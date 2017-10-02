@@ -74,6 +74,7 @@ export default {
             this.loading = false;
         },
         loadReports() {
+            this.reports = null;
             this.reportsLoading = true;
 
             axios.get('/api/reports/' + this.selectedSeason.id).then(response => {
