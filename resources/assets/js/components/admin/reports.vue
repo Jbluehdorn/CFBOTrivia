@@ -10,7 +10,7 @@
           <div class="panel-body">
               <div class="control-group">
                   <label for="">Season:</label>
-                  <select class="form-control" v-model="selectedSeason">
+                  <select class="form-control" v-model="selectedSeason" :disabled="reportsLoading">
                       <option :value="season" v-for="season in seasons" :key="season.id">{{season.title}}</option>
                   </select>
               </div>
@@ -66,12 +66,12 @@ export default {
             axios.get('/api/seasons').then(response => {
                 this.seasons = response.data;
                 this.selectedSeason = this.seasons[0];
+                this.loading = false;
             }).catch(error => {
                 console.log(error.data);
-                swal('Error!', 'Seasons failed to load', 'error')
+                swal('Error!', 'Seasons failed to load', 'error');
+                this.loading = false;
             });
-
-            this.loading = false;
         },
         loadReports() {
             this.reports = null;
@@ -79,12 +79,12 @@ export default {
 
             axios.get('/api/reports/' + this.selectedSeason.id).then(response => {
                     this.reports = response.data;
+                    this.reportsLoading = false;
                 }).catch(error => {
                     console.log(error.data);
                     swal('Error!', 'Reports failed to load', 'error');
+                    this.reportsLoading = false;
                 });
-
-            this.reportsLoading = false;
         }
     },
 

@@ -2522,12 +2522,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             axios.get('/api/seasons').then(function (response) {
                 _this.seasons = response.data;
                 _this.selectedSeason = _this.seasons[0];
+                _this.loading = false;
             }).catch(function (error) {
                 console.log(error.data);
                 __WEBPACK_IMPORTED_MODULE_0_sweetalert___default()('Error!', 'Seasons failed to load', 'error');
+                _this.loading = false;
             });
-
-            this.loading = false;
         },
         loadReports: function loadReports() {
             var _this2 = this;
@@ -2537,12 +2537,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
             axios.get('/api/reports/' + this.selectedSeason.id).then(function (response) {
                 _this2.reports = response.data;
+                _this2.reportsLoading = false;
             }).catch(function (error) {
                 console.log(error.data);
                 __WEBPACK_IMPORTED_MODULE_0_sweetalert___default()('Error!', 'Reports failed to load', 'error');
+                _this2.reportsLoading = false;
             });
-
-            this.reportsLoading = false;
         }
     },
 
@@ -33792,6 +33792,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       expression: "selectedSeason"
     }],
     staticClass: "form-control",
+    attrs: {
+      "disabled": _vm.reportsLoading
+    },
     on: {
       "change": function($event) {
         _vm.selectedSeason = Array.prototype.filter.call($event.target.options, function(o) {
