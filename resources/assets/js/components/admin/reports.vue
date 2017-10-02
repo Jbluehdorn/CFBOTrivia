@@ -96,7 +96,7 @@ export default {
 
     computed: {
         orderedReports() {
-            return _.orderBy(this.reports, 'score');
+            return _.orderBy(this.reports, 'score', 'desc');
         }
     }
 }

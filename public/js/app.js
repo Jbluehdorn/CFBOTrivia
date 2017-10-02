@@ -2554,7 +2554,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
     computed: {
         orderedReports: function orderedReports() {
-            return __WEBPACK_IMPORTED_MODULE_1_lodash___default.a.orderBy(this.reports, 'score');
+            return __WEBPACK_IMPORTED_MODULE_1_lodash___default.a.orderBy(this.reports, 'score', 'desc');
         }
     }
 };
